@@ -12,6 +12,7 @@ A HackWestern project for the **QNX track**. A blindfolded person wears a hat wi
 > - [qnx/README.md](qnx/README.md): QNX processes
 > - [DEMO_SCRIPT.md](DEMO_SCRIPT.md): judge demo
 > - [PLAN-qnx-boxing-assistant.md](PLAN-qnx-boxing-assistant.md): original plan
+> - [TEAMMATE_AUGMENTATION_GUIDE.md](TEAMMATE_AUGMENTATION_GUIDE.md): run the lighting / frame-rate training on a fast machine
 
 ---
 
@@ -168,7 +169,11 @@ python export_model_c.py models\early_detector_onnx.joblib   # -> qnx/model/earl
 
 `repose_onnx.py` copies labels at the time you run it. If you review more later, copy the new `labels.json` into `data_onnx\` (renamed `_onnx`) again.
 
-### 4.6 Sharing data through git
+### 4.6 Lighting / frame-rate augmentation (heavy, for a fast machine)
+
+`run_augmented_training.py` makes darker+blurred, overexposed and 15 fps copies of every session, re-runs pose on them, and compares training with and without the copies. Follow [TEAMMATE_AUGMENTATION_GUIDE.md](TEAMMATE_AUGMENTATION_GUIDE.md) step by step.
+
+### 4.7 Sharing data through git
 
 **Videos are not in git.** They're too big (GitHub rejects files over 100 MB) and they show people. Training doesn't need them, because the expensive features are cached. After you record and review, commit:
 

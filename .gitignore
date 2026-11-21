@@ -6,6 +6,16 @@ data/archive/
 # contact sheets = frames of the performer; regenerate with auto_label.py
 auto_label_review/
 
+# --- augmentation outputs (big, regenerable with run_augmented_training.py). runs/ IS committed.
+data_aug/
+data_onnx_aug/
+smoke_test/
+features/*_dim_blur.*
+features/*_bright.*
+features/*_dim.*
+features/*_fps[0-9]*.*
+features/smokeslice*
+
 # --- python / tool junk
 __pycache__/
 *.pyc

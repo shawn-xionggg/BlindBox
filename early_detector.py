@@ -127,6 +127,9 @@ def main():
     ap.add_argument("--no-flow", action="store_true", help="drop optical-flow features (plain-C portability test)")
     ap.add_argument("--clean-train", action="store_true",
                     help="train only on clean-reviewed punches (still scored on all reviewed punches)")
+    ap.add_argument("--aug-data", help="folder of augmented copies (augment_lighting.py); always scored, "
+                    "held-out chunk by held-out chunk")
+    ap.add_argument("--aug-train", action="store_true", help="also TRAIN on the augmented copies")
     ap.add_argument("--exit", action="store_true", help="also fire the fist-leaves-frame cue (exit_cue.py)")
     ap.add_argument("--pos-frames", type=int, default=early_dataset.POS_FRAMES,
                     help="frames after leaving guard labeled as 'early punch'")
@@ -152,6 +155,30 @@ def main():
         names = [names[j] for j in keep]
         print(f"no-flow: {len(names)} features: {', '.join(names)}")
     ms = 1000 * np.median(np.diff(sessions[0]["t"]))
+
+    # Augmented copies (other lighting / frame rate) of the same sessions. They're tied
+    # to their source session by TIME, so when a chunk of a session is held out, the
+    # same chunk of every copy is held out too (no peeking at the test footage).
+    aug = {}
+    if args.aug_data:
+        import json as _json
+        by_name = {s["name"]: si for si, s in enumerate(sessions)}
+        for p in sorted(Path(args.aug_data).glob("*.npz")):
+            info_p = p.with_suffix(".aug.json")
+            if not info_p.exists():
+                continue
+            info = _json.loads(info_p.read_text())
+            if info["source"] not in by_name:
+                continue
+            print("building", p.name)
+            a = early_dataset.build(p)
+            aug.setdefault(by_name[info["source"]], []).append((info["preset"], a))
+
+    def tmap(si, a, lo, hi):
+        """Same time range as sessions[si][lo:hi], in augmented copy a's frames."""
+        t = sessions[si]["t"]
+        return (int(np.searchsorted(a["t"], t[lo])),
+                int(np.searchsorted(a["t"], t[hi - 1], side="right")))
     exit_ev = {}
     if args.exit:
         import exit_cue
@@ -183,6 +210,12 @@ def main():
             m = y >= 0
             Xs.append(X[m])
             ys.append(y[m])
+            if args.aug_train:
+                for _, a in aug.get(si, []):
+                    alo, ahi = tmap(si, a, lo, hi)
+                    Xa, ya = a["X"][alo:ahi].reshape(-1, len(names)), a["y"][alo:ahi].reshape(-1)
+                    Xs.append(Xa[ya >= 0])
+                    ys.append(ya[ya >= 0])
         X, y = np.concatenate(Xs), np.concatenate(ys)
         if args.mirror:
             # mirror augmentation: a left-right flipped punch is still a punch. Only the
@@ -226,6 +259,7 @@ def main():
         acc = {"learned": [[], 0, 0.0, 0, 0], "launch (hand-made)": [[], 0, 0.0, 0, 0]}
         hooks = {k: [] for k in acc}
         per_sess = {}
+        per_aug = {}
         for fi, (si, lo, hi) in enumerate(folds):
             train_blocks = [f for j, f in enumerate(folds) if j != fi]
             clf = train(train_blocks)
@@ -242,6 +276,16 @@ def main():
                 d = [None if x is None else x * sdt for x in d]       # frames -> ms
                 hooks[label] += [x for x, fam in zip(d, fams) if fam.startswith("HOOK")]
                 if label == "learned":
+                    for preset, a in aug.get(si, []):
+                        alo, ahi = tmap(si, a, lo, hi)
+                        aev = events_from_scores(a["t"], scorer(a), thr)
+                        ad, af, ans, _, _ = score_events(a, alo, ahi, aev)
+                        adt = 1000 * float(np.median(np.diff(a["t"])))
+                        pa = per_aug.setdefault(preset, [0, 0, 0, 0.0])
+                        pa[0] += sum(x is not None and x * adt <= 200 for x in ad)
+                        pa[1] += len(ad)
+                        pa[2] += af
+                        pa[3] += ans
                     per = per_sess.setdefault(s["name"], [0, 0, 0, 0.0])
                     per[0] += sum(x is not None and x <= 200 for x in d)
                     per[1] += len(d)
@@ -259,6 +303,9 @@ def main():
             hk = hooks[label]
             print(f"{'':28s}   hooks only: caught <=200ms {sum(x is not None and x <= 200 for x in hk)}/{len(hk)}, "
                   f"<=300ms {sum(x is not None for x in hk)}/{len(hk)}")
+        for preset, (c, n, f, ns) in sorted(per_aug.items()):
+            print(f"    learned on {preset:9s} copies: caught <=200ms {c}/{n} ({100 * c / max(n, 1):.0f}%)"
+                  + (f", {f / (ns / 60):.2f} fa/min" if ns else ""))
         for name, (c, n, f, ns) in per_sess.items():
             print(f"    learned on {name}: caught <=200ms {c}/{n}"
                   + (f", {f / (ns / 60):.2f} fa/min" if ns else ""))
