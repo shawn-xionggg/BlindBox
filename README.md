@@ -122,6 +122,8 @@ python auto_label.py data\session_<time>.npz
 
 This finds every moment a fist leaves guard and writes `data/session_<time>.auto_candidates.json`.
 
+For `--free` sessions, also run `python combo_candidates.py data\session_<time>.npz`. It adds the follow-up punches of combos (which `auto_label.py` mostly misses) to the `--messy` review pass.
+
 ### 4.3 Review (y/n), two passes
 
 ```powershell
@@ -135,6 +137,7 @@ python review_labels.py data\session_<time>.npz --messy
 | Key | Action |
 |---|---|
 | `y` | Real punch, and the start frame is right |
+| `f` | Feint: a fake punch start (saved as type FEINT, never trained as a punch) |
 | `n` | Not a punch, or a wrong moment |
 | `,` / `.` | Nudge the start one frame earlier / later |
 | `1`–`6` | Fix the punch type (optional) |
@@ -142,7 +145,10 @@ python review_labels.py data\session_<time>.npz --messy
 | `space` | Pause |
 | `q` | Save and quit (you can resume later) |
 
-**The start frame** is the first frame where the fist starts leaving guard. That exact frame is what the model learns, so it matters. Labels are saved to `data/session_<time>.labels.json`.
+**The start frame** is the first frame the fist moves **toward the target**. A pull-back, dip or shoulder drop before it is the telegraph, not the start. That exact frame is what the models learn, so it matters. (Reviews before this rule used "the first frame the fist leaves guard"; new decisions are tagged `"rule": "toward_target"`.) Labels are saved to `data/session_<time>.labels.json`.
+
+- An orange "punch already at ..." line means another accepted punch starts within 0.2 s: usually the same punch seen twice.
+- To check that two people apply the rule the same way, the second one reviews blind with `--reviewer <name>`, then `python label_agreement.py data\session_<time>.npz --reviewer <name>` compares them. Details: [HEAD_MOUNTED_TRAINING.md](HEAD_MOUNTED_TRAINING.md) section 5.
 
 ### 4.4 Train
 
@@ -223,7 +229,9 @@ Anyone can then retrain with `python early_detector.py`. Share the `.mp4` some o
 | `collect.py` | Recorder with scripted prompts |
 | `free_blocks.py` | Baseline and free-boxing blocks for `collect.py --free` (schedule and screens) |
 | `auto_label.py` | Finds punch starts in a session |
-| `review_labels.py` | y/n review UI (`--messy` for the second pass) |
+| `review_labels.py` | y/n review UI (`--messy` for the second pass, `--reviewer` for a blind second opinion) |
+| `combo_candidates.py` | Adds combo follow-up punches in free-boxing blocks to the review |
+| `label_agreement.py` | How well two reviewers agree (decisions and start frames) |
 | `early_dataset.py` | Features + labels from reviewed sessions |
 | `early_detector.py` | Cross-validated training and evaluation |
 | `flow_features.py` | Optical-flow features (cached in `features/`) |

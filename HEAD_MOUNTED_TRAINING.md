@@ -159,19 +159,32 @@ Each 10-minute punch session gives about 100–125 usable punches.
 Run these for every new `data/session_<time>.npz`:
 ```powershell
 python auto_label.py data\session_<time>.npz
+python combo_candidates.py data\session_<time>.npz
 python review_labels.py data\session_<time>.npz
 python review_labels.py data\session_<time>.npz --messy
 ```
+`combo_candidates.py` is for `--free` sessions (for any other session it says so and changes nothing). It adds the follow-up punches of combos, which `auto_label.py` mostly misses, to the `--messy` pass: expect roughly 12–24 extra candidates per minute of free boxing to accept or reject. It also builds the optical-flow cache, which makes the "cache the features" step below quicker.
+
+**The start rule: the start frame is the first frame the fist moves TOWARD the target** (the wearer). A pull-back, dip or shoulder drop before that is the *telegraph*, not the start: nudge past it with `.`. Punch prediction learns from exactly that difference. Older reviews used "the first frame the fist leaves guard"; new decisions are saved with `"rule": "toward_target"`, so the two can be told apart.
 
 Review keys:
 - `y` = real punch, and the start frame is right
+- `f` = feint, a fake punch start (saved as type FEINT, never trained as a punch)
 - `n` = not a punch, or the wrong moment
 - `,` / `.` = nudge one frame earlier / later
 - `q` = save and quit (it resumes where you left off)
 
-**The start frame is the first frame where the fist starts leaving guard.**
+An orange **"punch already at ..."** line means another accepted punch starts within 0.2 s, in this pass or the other one. That is usually the same punch seen twice (once per fist, or once per pass): answer `n` unless it really is a second punch. (The older sessions have about 15 such duplicates.)
 
 Free-boxing punches (`--free` sessions) show up in the review with type `FREE`, most of them in the `--messy` pass because the fist rarely rests before them. Leave the type as `FREE` or set it with `1`–`5`.
+
+**Do two reviewers agree?** Check this once for each new person who labels, on one session or a 2-minute clip of it. The second person reviews blind: they start from slightly shifted frames, and their labels are saved separately and never used for training.
+```powershell
+python review_labels.py data\session_<time>.npz --reviewer <name>
+python review_labels.py data\session_<time>.npz --reviewer <name> --messy
+python label_agreement.py data\session_<time>.npz --reviewer <name>
+```
+They can stop early: only candidates both reviewers decided are compared, and `--from 60 --to 180` limits it to one clip (seconds into the session). Good agreement is kappa ≥ 0.8 and ≥ 90% of start frames within 1 frame. If it's lower, go through the listed disagreements together and agree on how to apply the start rule.
 
 A wearer-motion session has no punches. The review then prints "No punch candidates to review; saved empty labels". That's expected, and the session is still used for training.
 
@@ -268,7 +281,7 @@ git push
 ## 9. Checklist
 
 - [ ] Camera solidly on the hat, aimed so the puncher's head to waist is visible at 1.5–2 m, laptop plugged in
-- [ ] Punch session 1 (`--free --mount head --performer <name> --stance <stance>`, 8–10 min) → back up the `.mp4` → auto-label → review → review `--messy` → `repose_onnx.py` → cache features → commit
+- [ ] Punch session 1 (`--free --mount head --performer <name> --stance <stance>`, 8–10 min) → back up the `.mp4` → auto-label → `combo_candidates.py` → review → review `--messy` → `repose_onnx.py` → cache features → commit
 - [ ] Punch session 2 (ideally the other person punching) → same
 - [ ] More `--free` sessions from new punchers (at least 3 people in total, 2 sessions each) for punch prediction
 - [ ] Wearer-motion session (`--negatives-only --mount head`, 3–5 min) → auto-label → review → `repose_onnx.py` → cache features → commit
