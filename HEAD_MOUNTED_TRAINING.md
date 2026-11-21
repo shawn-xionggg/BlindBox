@@ -196,7 +196,7 @@ copy models\candidates\all_data_onnx.joblib models\early_detector_onnx.joblib
 python -m pytest -q test_early.py test_anticipation.py
 python export_model_c.py models\early_detector_onnx.joblib
 ```
-Use `head_only` instead of `all_data` if that one won. Run `export_model_c.py` **after** the tests: the tests overwrite the C model with the laptop version.
+Use `head_only` instead of `all_data` if that one won. `export_model_c.py` must be given the **Pi** model (`early_detector_onnx.joblib`), because the C code runs on the Pi.
 
 **Optional, after there's head data: lighting / frame-rate robustness.** Run the one-command augmentation on the fast machine, scored on head footage:
 ```powershell

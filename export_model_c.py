@@ -24,7 +24,8 @@ from pathlib import Path
 import joblib
 import numpy as np
 
-OUT = Path("qnx/model")
+# EXPORT_C_OUT lets the tests export to a temporary folder instead of overwriting the real one
+OUT = Path(os.environ.get("EXPORT_C_OUT", "qnx/model"))
 
 
 def cnum(v):

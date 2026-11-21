@@ -44,7 +44,10 @@ class EarlyDetectorTests(unittest.TestCase):
     def test_exported_c_model_matches_python(self):
         env = dict(os.environ)
         env["PATH"] = str(Path(GCC).parent) + os.pathsep + env.get("PATH", "")
-        r = subprocess.run([sys.executable, "export_model_c.py"], cwd=HERE, capture_output=True, text=True, env=env)
+        import tempfile
+        with tempfile.TemporaryDirectory() as tmp:
+            env["EXPORT_C_OUT"] = tmp   # never overwrite qnx/model (that holds the Pi model's export)
+            r = subprocess.run([sys.executable, "export_model_c.py"], cwd=HERE, capture_output=True, text=True, env=env)
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         self.assertIn("matches scikit-learn", r.stdout)
 
