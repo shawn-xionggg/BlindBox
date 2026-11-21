@@ -19,6 +19,7 @@ The model was trained at ~20 fps; at very different frame rates retrain it.
 """
 import argparse
 import csv
+import os
 import threading
 import time
 from pathlib import Path
@@ -34,12 +35,57 @@ DIRECTIONAL = {"LEFT": ("DODGE RIGHT", 1200, 120), "RIGHT": ("DODGE LEFT", 600, 
 UNIVERSAL = ("INCOMING", 1000, 150)
 
 
-def beep(freq, ms):
-    try:
-        import winsound
-        threading.Thread(target=winsound.Beep, args=(freq, ms), daemon=True).start()
-    except ImportError:
-        print("\a", end="", flush=True)
+class Beeper:
+    """Low-latency cue tones.
+
+    winsound.Beep goes through Windows' beep emulation, which adds a noticeable
+    delay before sound comes out. Instead, open pygame's mixer once with a tiny
+    buffer (256 samples = ~6 ms at 44.1 kHz) and pre-render every cue tone, so a
+    cue is just "start playing this ready buffer". Falls back to winsound.
+    """
+    RATE, BUFFER = 44100, 256
+
+    def __init__(self, tones=()):
+        self.sounds, self.pg = {}, None
+        try:
+            os.environ.setdefault("PYGAME_HIDE_SUPPORT_PROMPT", "1")
+            import warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")      # pygame's pkg_resources deprecation notice
+                import pygame
+            pygame.mixer.pre_init(self.RATE, -16, 1, self.BUFFER)
+            pygame.mixer.init()
+            pygame.mixer.set_num_channels(4)
+            self.pg = pygame
+            for f, ms in tones:
+                self._sound(f, ms)
+        except Exception as exc:  # no audio device / no pygame -> old path
+            print(f"low-latency audio unavailable ({exc}); using winsound.Beep")
+            self.pg = None
+
+    def _sound(self, freq, ms):
+        key = (freq, ms)
+        if key not in self.sounds:
+            n = int(self.RATE * ms / 1000)
+            t = np.arange(n) / self.RATE
+            env = np.minimum(1, np.minimum(np.arange(n), n - 1 - np.arange(n)) / (0.003 * self.RATE))  # 3 ms fades: no clicks
+            wave = (0.8 * 32767 * np.sin(2 * np.pi * freq * t) * env).astype(np.int16)
+            channels = self.pg.mixer.get_init()[2]   # the device may force stereo
+            if channels > 1:
+                wave = np.ascontiguousarray(np.repeat(wave[:, None], channels, axis=1))
+            self.sounds[key] = self.pg.sndarray.make_sound(wave)
+        return self.sounds[key]
+
+    def __call__(self, freq, ms):
+        if self.pg is not None:
+            self.pg.mixer.stop()              # a new cue cuts off the old one
+            self._sound(freq, ms).play()
+            return
+        try:
+            import winsound
+            threading.Thread(target=winsound.Beep, args=(freq, ms), daemon=True).start()
+        except ImportError:
+            print("\a", end="", flush=True)
 
 
 def main():
@@ -89,6 +135,9 @@ def main():
         capture = None
     det = EarlyDetector(args.model, budget=args.budget, threshold=args.threshold,
                         dt_est=float(np.median(np.diff(z["timestamps"]))) if z is not None else 0.048)
+    beep = None
+    if not args.headless and not args.no_beep:
+        beep = Beeper([(f, ms) for _, f, ms in list(DIRECTIONAL.values()) + [UNIVERSAL]])  # pre-render all cue tones
     exit_cue = None
     if args.exit_cue:
         from exit_cue import ExitCue
@@ -144,7 +193,7 @@ def main():
             if ev:
                 name, freq, dur = DIRECTIONAL[ev["side"]] if args.directional else UNIVERSAL
                 if not args.headless and not args.no_beep:
-                    beep(freq, dur)
+                    beep(freq, dur)  # pre-rendered tone, ~6 ms buffer
                 if ipc is not None:
                     # STEP BACK has no code of its own: CUE_INCOMING already means "step back"
                     direction = {"DODGE LEFT": CUE_LEFT, "DODGE RIGHT": CUE_RIGHT,
