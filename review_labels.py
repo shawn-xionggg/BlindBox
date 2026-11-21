@@ -25,10 +25,13 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+from free_blocks import FREE_COMMAND
 from label_onsets import save_labels
 
 FAMILIES = {ord("1"): "JAB", ord("2"): "CROSS", ord("3"): "HOOK_L",
             ord("4"): "HOOK_R", ord("5"): "UPPERCUT", ord("6"): "STEP_IN"}
+# prompts during which a punch is expected; FREE = free-boxing block (collect.py --free)
+PUNCH_PROMPTS = ("JAB", "CROSS", "HOOK_L", "HOOK_R", "UPPERCUT", FREE_COMMAND)
 OFFSETS = range(-6, 11)   # frames shown in the loop, relative to departure
 STRIP = range(-2, 4)      # thumbnails under the loop
 
@@ -96,6 +99,21 @@ def render(cand, state, frames, loop_off, pos, total, timestamps):
     return canvas
 
 
+def review_candidates(all_cands, messy=False, everything=False):
+    """The candidates one review pass shows, in file order. Review progress is saved by
+    position in this list, so the selection must stay stable."""
+    if messy:
+        # punches thrown right after another move, inside punch prompts (or unscripted sessions)
+        return [c for c in all_cands if c["quality"] != "clean" and
+                ("guess" not in c or c["family"] in PUNCH_PROMPTS)]
+    if everything:
+        return list(all_cands)
+    # movements during scripted don't-punch commands are already known negatives
+    # (scripted candidates carry a "guess" key; unscripted ones keep everything clean)
+    return [c for c in all_cands if c["quality"] == "clean"
+            and ("guess" not in c or c["family"] in PUNCH_PROMPTS)]
+
+
 def accepted_marks(cands, states):
     marks = []
     for i, c in enumerate(cands):
@@ -127,16 +145,9 @@ def main():
     if not cand_path.exists():
         raise SystemExit(f"No candidates yet: run  python auto_label.py {npz}")
     all_cands = json.loads(cand_path.read_text())["candidates"]
-    cands = all_cands if args.all else [c for c in all_cands if c["quality"] == "clean"]
     if args.messy:
         args.labeler = "reviewed_messy"
-        cands = [c for c in all_cands if c["quality"] != "clean" and
-                 ("guess" not in c or c["family"] in ("JAB", "CROSS", "HOOK_L", "HOOK_R", "UPPERCUT"))]
-    elif not args.all:
-        # movements during scripted don't-punch commands are already known negatives
-        # (scripted candidates carry a "guess" key; unscripted ones keep everything clean)
-        cands = [c for c in cands if "guess" not in c
-                 or c["family"] in ("JAB", "CROSS", "HOOK_L", "HOOK_R", "UPPERCUT")]
+    cands = review_candidates(all_cands, messy=args.messy, everything=args.all)
     if not cands:
         # e.g. a --negatives-only session: no punches to review. Save an empty label set
         # so training still uses it (as known don't-punch footage).

@@ -4,7 +4,7 @@ This is the real training: data recorded the way the demo works, with the C270 o
 
 **Short version of the plan:**
 1. Mount the camera on the hat.
-2. Record 3–4 punch sessions plus 1–2 "wearer moves" sessions, all with `--mount head`.
+2. Record 3–4 punch sessions (with `--free`, which adds free-boxing blocks) plus 1–2 "wearer moves" sessions, all with `--mount head`.
 3. Label them (auto-label, then y/n review).
 4. Train two candidate models and let the **head-mounted test score** pick the winner.
 5. Install it, live-test it blindfolded, and tune the threshold.
@@ -81,7 +81,7 @@ Never delete the desk sessions. They stay in the repo.
 
 | Person | Does |
 |---|---|
-| **Puncher** | Stands 1.5–2 m away, reads the yellow prompt on the laptop, and does exactly that move (section 4). Pulls every punch short. |
+| **Puncher** | Stands 1.5–2 m away, reads the yellow prompt on the laptop, and does exactly that move (section 4). During FREE BOXING, boxes naturally and picks their own moments instead. Pulls every punch short. |
 | **Wearer** | Wears the hat. **Behaves like in the demo** (below). |
 
 What the wearer should do **during every recording:**
@@ -99,10 +99,26 @@ Swap roles for some sessions. **A second puncher is the most valuable data there
 
 All recordings need `--mount head`. The recorder refuses to start without `--mount`, so this can't be forgotten.
 
-**A. Punch sessions** (the main data). Record 8–10 minutes each:
+**A. Punch sessions** (the main data). Record 8–10 minutes each, with `--free` so the session also has free-boxing blocks (data for punch prediction):
 ```powershell
-python collect.py --source 1 --script --mount head --performer <puncher-name> --wearer <wearer-name>
+python collect.py --source 1 --script --free --mount head --performer <puncher-name> --stance orthodox --wearer <wearer-name>
 ```
+- `--performer` is required with `--free`. **Spell each person's name the same way every time** (lowercase first name): prediction is tested on people the model never trained on, so a misspelled name counts as a different person.
+- `--stance orthodox` if the puncher's left hand leads (left foot forward), `--stance southpaw` if the right hand leads.
+- Without `--free` the recorder works exactly as before (prompts only).
+
+A `--free` session runs like this:
+
+| Block | Screen | Puncher does |
+|---|---|---|
+| **BASELINE** (first 20 s) | blue border | Fighting stance, guard up, move like between punches (bounce if you bounce). **No punches.** |
+| **Prompts** (60 s) | yellow `COMMAND` text | Exactly the prompted move (table below) |
+| **FREE BOXING** (60 s) | green border and countdown | Box naturally: bounce, step in and out, set up, and **decide yourself** when to punch. Throw singles and combos (jab-cross, jab-jab-cross, hook-cross) and a few feints. **Eyes on the wearer, not the screen.** Every punch stops short; step back out after attacking. |
+| then prompts and free boxing alternate until `q` | | |
+
+- 5 s before a block changes, a countdown appears and the border blinks, so nobody needs to watch the screen during free boxing.
+- Why free boxing: when every punch answers a prompt, nothing natural happens before it (the puncher just glances at the screen). Free boxing records real setups, combos and feints, which punch prediction needs.
+- About half of a `--free` session is free boxing, so it has fewer prompted punches but adds natural ones. Block lengths can be changed with `--baseline-seconds`, `--prompt-seconds` and `--free-seconds`.
 
 What each yellow prompt means:
 
@@ -117,6 +133,7 @@ What each yellow prompt means:
 
 - Mix clean punches (guard held first) with messy ones (straight out of another move), and include some step-in punches.
 - Press `q` to save. You get `data/session_<time>.npz` and `.mp4`.
+- **Back up the `.mp4` right away** (USB drive or Drive). Labels for punch prediction may need redoing later, and only the video makes that possible. Videos are still never committed.
 
 **B. Wearer-motion sessions** (teach "camera moving is not a punch"). Record 3–5 minutes:
 ```powershell
@@ -131,6 +148,7 @@ python collect.py --source 1 --script --negatives-only --mount head --performer 
 |---|---|
 | Minimum to make a decision | 2 punch sessions + 1 wearer-motion session (about 25 min) → roughly 200 head punches |
 | Good | 4 punch sessions (2 punchers) + 2 wearer-motion sessions → 400+ head punches |
+| For punch prediction | `--free` sessions from **at least 3 different punchers**, 2 sessions each. Prediction is tested on people the model never saw, so the number of different people matters most. |
 
 Each 10-minute punch session gives about 100–125 usable punches.
 
@@ -152,6 +170,8 @@ Review keys:
 - `q` = save and quit (it resumes where you left off)
 
 **The start frame is the first frame where the fist starts leaving guard.**
+
+Free-boxing punches (`--free` sessions) show up in the review with type `FREE`, most of them in the `--messy` pass because the fist rarely rests before them. Leave the type as `FREE` or set it with `1`–`5`.
 
 A wearer-motion session has no punches. The review then prints "No punch candidates to review; saved empty labels". That's expected, and the session is still used for training.
 
@@ -248,8 +268,9 @@ git push
 ## 9. Checklist
 
 - [ ] Camera solidly on the hat, aimed so the puncher's head to waist is visible at 1.5–2 m, laptop plugged in
-- [ ] Punch session 1 (`--mount head`, 8–10 min) → auto-label → review → review `--messy` → `repose_onnx.py` → cache features → commit
+- [ ] Punch session 1 (`--free --mount head --performer <name> --stance <stance>`, 8–10 min) → back up the `.mp4` → auto-label → review → review `--messy` → `repose_onnx.py` → cache features → commit
 - [ ] Punch session 2 (ideally the other person punching) → same
+- [ ] More `--free` sessions from new punchers (at least 3 people in total, 2 sessions each) for punch prediction
 - [ ] Wearer-motion session (`--negatives-only --mount head`, 3–5 min) → auto-label → review → `repose_onnx.py` → cache features → commit
 - [ ] Train "all data" vs "head only" with `--test-mount head` on the fast machine, then pick the winner
 - [ ] Train the Pi version of the winner → install → tests → `export_model_c.py` → commit

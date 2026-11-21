@@ -18,6 +18,7 @@ from pose_features import PoseRunner, FeatureStream, GloveOnset, COMMANDS, NEGAT
 from glove_features import GloveSegmenter, PRESETS
 from launch_detector import LaunchDetector
 from live_runtime import LatestCapture, VideoSink, StageTimings
+import free_blocks
 
 INSTRUCTIONS = 'Puncher: mix punches with idle guard movement, bouncing, feints. Aim for 100+ punches across sessions.'
 EDGES = ((5, 6), (5, 7), (7, 9), (6, 8), (8, 10), (5, 11), (6, 12), (11, 12))
@@ -65,7 +66,8 @@ def text(frame, message, y, color=(255, 255, 255), scale=.48):
     cv2.putText(frame, message, (10, y), cv2.FONT_HERSHEY_SIMPLEX, scale, color, 1, cv2.LINE_AA)
 
 
-def save_session(path, timestamps, keypoints, confidences, labels, rejected, model, source, session_id=None, glove_blobs=None, commands=(), command_times=(), performer="unknown", mount="desk", wearer=""):
+def save_session(path, timestamps, keypoints, confidences, labels, rejected, model, source, session_id=None, glove_blobs=None, commands=(), command_times=(), performer="unknown", mount="desk", wearer="",
+                 blocks=(), block_times=(), stance="unknown"):
     labels = sorted(labels, key=lambda e: e['frame'])
     np.savez_compressed(path, timestamps=np.asarray(timestamps),
         keypoints=np.asarray(keypoints).reshape(-1, 17, 2),
@@ -76,7 +78,9 @@ def save_session(path, timestamps, keypoints, confidences, labels, rejected, mod
         detected_times=np.asarray([e.get('detected_time', timestamps[e['frame']]) for e in labels]),
         rejected_frames=np.asarray(rejected, dtype=int), pose_model=str(model), source=str(source),
         session_id=str(session_id or Path(path).stem), performer=str(performer),
-        mount=str(mount), wearer=str(wearer),
+        mount=str(mount), wearer=str(wearer), stance=str(stance),
+        # --free sessions: BASELINE / PROMPTS / FREE blocks and their start times (free_blocks.py)
+        blocks=np.asarray(blocks, dtype='<U16'), block_times=np.asarray(block_times, dtype=float),
         glove_blobs=np.asarray(glove_blobs if glove_blobs is not None else np.full((len(timestamps), 2, 3), np.nan)),
         commands=np.asarray(commands, dtype='<U16'), command_times=np.asarray(command_times, dtype=float),
         onset_families=np.asarray([e.get('family', 'UNKNOWN') for e in labels], dtype='<U16'))
@@ -105,6 +109,14 @@ def main():
     ap.add_argument('--wearer', default='', help="who wore the camera (head mount)")
     ap.add_argument('--negatives-only', action='store_true',
                     help="with --script: only don't-punch prompts (for wearer head-motion footage)")
+    ap.add_argument('--free', action='store_true',
+                    help="with --script: a calm BASELINE first, then the prompts alternate with self-paced "
+                         "FREE BOXING blocks (natural setups and combos, for punch prediction; see free_blocks.py)")
+    ap.add_argument('--baseline-seconds', type=float, default=20., help="with --free: baseline length (0 = none)")
+    ap.add_argument('--prompt-seconds', type=float, default=60., help="with --free: length of each block of prompts")
+    ap.add_argument('--free-seconds', type=float, default=60., help="with --free: length of each free-boxing block")
+    ap.add_argument('--stance', choices=('orthodox', 'southpaw', 'unknown'), default='unknown',
+                    help="the puncher's stance: orthodox = left hand leads, southpaw = right hand leads")
     ap.add_argument('--glove-thresh', type=float, default=3., help='Relative-area log growth per second')
     args = ap.parse_args()
     if args.benchmark_frames <= 0 or args.launch_thresh <= 0:
@@ -115,6 +127,15 @@ def main():
         ap.error("say where the camera is: --mount head (on the wearer's hat) or --mount desk (fixed)")
     if args.negatives_only and not args.script:
         ap.error("--negatives-only needs --script")
+    if args.free and not args.script:
+        ap.error("--free needs --script")
+    if args.free and args.negatives_only:
+        ap.error("--free and --negatives-only don't mix: free-boxing blocks are for punching")
+    if args.free and (args.prompt_seconds <= 0 or args.free_seconds <= 0 or args.baseline_seconds < 0):
+        ap.error("--prompt-seconds and --free-seconds must be positive, --baseline-seconds 0 or more")
+    if args.free and not (args.benchmark or args.from_video) and str(args.source).isdigit() and args.performer == 'unknown':
+        # leave-one-performer-out tests depend on this name: a missing one silently merges people
+        ap.error("--free records people for punch prediction: say who is punching with --performer <name>")
     cv2.setNumThreads(args.opencv_threads)
     runner = PoseRunner(args.model, args.imgsz)
     source = args.benchmark or args.from_video or args.source
@@ -142,9 +163,15 @@ def main():
     stream, detector, writer = FeatureStream(), LaunchDetector(thresh=args.launch_thresh), None
     segmenter, glove_detector = GloveSegmenter(args.color), GloveOnset(args.glove_thresh)
     raw_blobs, commands, command_times = [], [], []
+    blocks, block_times = [], []
     if original is not None:
         commands = original.get('commands', np.array([])).tolist()
         command_times = original.get('command_times', np.array([])).tolist()
+        blocks = original.get('blocks', np.array([])).tolist()
+        block_times = original.get('block_times', np.array([])).tolist()
+    # --free: free_blocks.FreeSchedule picks the block and the prompt (same prompt pool as --script)
+    schedule = (free_blocks.FreeSchedule(COMMANDS + ('GUARD_SHIFT',), args.baseline_seconds, args.prompt_seconds,
+                                         args.free_seconds) if args.free and original is None else None)
     next_command = 0.
     last_auto_detection = -np.inf
     def active_command(t):
@@ -156,6 +183,9 @@ def main():
     print(SAFETY)
     print(INSTRUCTIONS)
     print(__doc__)
+    if schedule is not None:
+        print(free_blocks.plan_text(args.baseline_seconds, args.prompt_seconds, args.free_seconds,
+                                    args.performer, args.stance))
     try:
         while True:
             loop_start = time.perf_counter()
@@ -188,7 +218,15 @@ def main():
             times.append(t)
             points.append(xy.copy())
             confidences.append(conf.copy())
-            if args.script and original is None and t >= next_command:
+            if schedule is not None:
+                block, command = schedule.update(t)
+                if block:
+                    blocks.append(block)
+                    block_times.append(t)
+                if command:
+                    commands.append(command)
+                    command_times.append(t)
+            elif args.script and original is None and t >= next_command:
                 # GUARD_SHIFT twice as often: sliding the guard sideways is the
                 # top false beep live and the older sessions never recorded it
                 pool = NEGATIVES if args.negatives_only else COMMANDS + ('GUARD_SHIFT',)
@@ -221,15 +259,19 @@ def main():
                 text(frame, SAFETY, 44)
                 # Saved labels stay HOOK_L/HOOK_R (= fist comes from that side of the IMAGE);
                 # the screen spells out which hand, since the camera faces the puncher.
-                shown_cmd = {'HOOK_L': 'HOOK_L = hook with your RIGHT hand',
-                             'HOOK_R': 'HOOK_R = hook with your LEFT hand',
-                             'GUARD_SHIFT': "GUARD_SHIFT = slide your fists left/right, DON'T punch"}.get(active_command(t), active_command(t))
-                text(frame, 'COMMAND: '+shown_cmd, 140, (0, 255, 255), .9)
+                # --free: BASELINE / FREE blocks get their own static screen instead of a prompt
+                block_screen = schedule is not None and free_blocks.draw(frame, schedule, t)
+                if not block_screen:
+                    shown_cmd = {'HOOK_L': 'HOOK_L = hook with your RIGHT hand',
+                                 'HOOK_R': 'HOOK_R = hook with your LEFT hand',
+                                 'GUARD_SHIFT': "GUARD_SHIFT = slide your fists left/right, DON'T punch"}.get(active_command(t), active_command(t))
+                    text(frame, 'COMMAND: '+shown_cmd, 140, (0, 255, 255), .9)
                 text(frame, 'Aim for 100+ punches across sessions. l/r/c selects manual side.', 66)
-                if t < flash_until:
+                if t < flash_until and not block_screen:   # nothing flashes during free boxing
                     text(frame, 'ONSET', 105, (0, 0, 255), 1.)
                 if segmenter.color.hue is None:
-                    text(frame, 'Click glove to sample color (optional)', 170)
+                    if not block_screen:
+                        text(frame, 'Click glove to sample color (optional)', 170)
                 elif segmenter.hsv is not None:
                     # live glove mask preview: ONLY the gloves should be white
                     gm = segmenter.color.mask(segmenter.hsv)
@@ -280,10 +322,14 @@ def main():
             save_session(stem.with_suffix('.npz'), times, points, confidences, labels, rejected, args.model, source, identity, raw_blobs, commands, command_times,
                          str(original.get('performer', args.performer)) if original is not None else args.performer,
                          str(original['mount']) if original is not None and 'mount' in original else (args.mount or 'desk'),
-                         str(original['wearer']) if original is not None and 'wearer' in original else args.wearer)
+                         str(original['wearer']) if original is not None and 'wearer' in original else args.wearer,
+                         blocks, block_times,
+                         str(original['stance']) if original is not None and 'stance' in original else args.stance)
             if original is not None and paired.with_suffix('.labels.json').exists():
                 shutil.copyfile(paired.with_suffix('.labels.json'), stem.with_suffix('.labels.json'))
             print(f'Saved {stem}.npz and .mp4: {len(times)} frames, {len(labels)} onsets. NPZ timestamps are authoritative (live inference may lower capture fps).')
+            if blocks:
+                print(free_blocks.summary(blocks, block_times, times[-1]))
 
 
 if __name__ == '__main__':

@@ -105,6 +105,8 @@ Yellow text on screen tells the puncher what to do every 2–4 s. **Do every act
 | `GUARD_SHIFT` | Slide your fists left/right **without punching**. Make it big and fast: this is the main false-beep cause. |
 | `STEP_IN`, `HEAD_TURN`, `NOD`, `GLOVE_ADJUST`, `IDLE` | That movement, **no punch**. |
 
+**Free boxing (data for punch prediction):** add `--free --stance orthodox` (or `southpaw`); `--performer` is required with `--free`. The session starts with a 20 s calm baseline, then alternates 60 s of prompts with 60 s of free boxing, where the puncher boxes naturally and chooses when to punch (singles, combos, a few feints). Details: [HEAD_MOUNTED_TRAINING.md](HEAD_MOUNTED_TRAINING.md) section 4.
+
 **Tips:**
 - Face the light.
 - Keep your whole upper body in frame.
@@ -128,7 +130,7 @@ python review_labels.py data\session_<time>.npz --messy
 ```
 
 - The first pass shows **clean** punches (fist held still first). The second shows **messy** ones (thrown right after another move).
-- It loops a slow clip around each auto-labeled start. Only punches from punch prompts are shown: the don't-punch prompts are already known negatives.
+- It loops a slow clip around each auto-labeled start. Only punches from punch prompts are shown: the don't-punch prompts are already known negatives. Free-boxing blocks count as punch prompts (type `FREE`).
 
 | Key | Action |
 |---|---|
@@ -219,6 +221,7 @@ Anyone can then retrain with `python early_detector.py`. Share the `.mp4` some o
 | `dodge_live.py` | **The demo app** (camera → pose → detector → cue) |
 | `early_live.py` | Streaming detector + cue rules (live features verified identical to training) |
 | `collect.py` | Recorder with scripted prompts |
+| `free_blocks.py` | Baseline and free-boxing blocks for `collect.py --free` (schedule and screens) |
 | `auto_label.py` | Finds punch starts in a session |
 | `review_labels.py` | y/n review UI (`--messy` for the second pass) |
 | `early_dataset.py` | Features + labels from reviewed sessions |
