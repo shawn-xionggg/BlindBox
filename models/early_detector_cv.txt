@@ -1,35 +1,48 @@
 building session_20261121_024335_748065.npz
 building session_20261121_030328_194149.npz
 building session_20261121_095106_097514.npz
+building session_20261121_115113_071950.npz
 
-                             | caught +1    +2    +3    +4    +6 | median  | fa/min | feints
+                             | caught <=50ms <=100 <=150 <=200 <=300 | median  | fa/min | feints
 --- threshold picked on training blocks for <= 1 false alarms/min ---
-learned                      |   12%   18%   21%   28%   35% |    96ms |   1.31 | 12/20
-                               hooks only: caught +4 27/124, +6 32/124
-launch (hand-made)           |    0%    2%    6%   13%   24% |   193ms |   1.02 | 1/20
-                               hooks only: caught +4 17/124, +6 28/124
+learned                      |   12%   20%   26%   33%   40% |   128ms |   1.26 | 15/29
+                               hooks only: caught <=200ms 55/177, <=300ms 66/177
+launch (hand-made)           |    0%    2%    5%   11%   21% |   225ms |   0.96 | 1/29
+                               hooks only: caught <=200ms 21/177, <=300ms 37/177
+    learned on session_20261121_024335_748065.npz: caught <=200ms 46/112
+    learned on session_20261121_030328_194149.npz: caught <=200ms 53/123, 2.08 fa/min
+    learned on session_20261121_095106_097514.npz: caught <=200ms 6/17, 1.26 fa/min
+    learned on session_20261121_115113_071950.npz: caught <=200ms 18/125, 0.61 fa/min
 --- threshold picked on training blocks for <= 2 false alarms/min ---
-learned                      |   22%   31%   37%   45%   51% |    96ms |   2.47 | 16/20
-                               hooks only: caught +4 48/124, +6 53/124
-launch (hand-made)           |    0%    6%   13%   22%   37% |   193ms |   2.18 | 1/20
-                               hooks only: caught +4 27/124, +6 39/124
+learned                      |   21%   34%   44%   52%   59% |    96ms |   3.04 | 19/29
+                               hooks only: caught <=200ms 83/177, <=300ms 94/177
+launch (hand-made)           |    0%    3%    7%   14%   26% |   193ms |   2.08 | 1/29
+                               hooks only: caught <=200ms 30/177, <=300ms 45/177
+    learned on session_20261121_024335_748065.npz: caught <=200ms 59/112
+    learned on session_20261121_030328_194149.npz: caught <=200ms 74/123, 4.54 fa/min
+    learned on session_20261121_095106_097514.npz: caught <=200ms 8/17, 4.41 fa/min
+    learned on session_20261121_115113_071950.npz: caught <=200ms 55/125, 1.51 fa/min
 --- threshold picked on training blocks for <= 4 false alarms/min ---
-learned                      |   38%   48%   56%   62%   68% |    48ms |   5.97 | 19/20
-                               hooks only: caught +4 69/124, +6 78/124
-launch (hand-made)           |    4%   12%   23%   32%   47% |   193ms |   4.22 | 8/20
-                               hooks only: caught +4 38/124, +6 49/124
+learned                      |   33%   47%   54%   63%   68% |    64ms |   5.93 | 22/29
+                               hooks only: caught <=200ms 103/177, <=300ms 112/177
+launch (hand-made)           |    1%    7%   16%   26%   41% |   193ms |   4.30 | 5/29
+                               hooks only: caught <=200ms 47/177, <=300ms 66/177
+    learned on session_20261121_024335_748065.npz: caught <=200ms 75/112
+    learned on session_20261121_030328_194149.npz: caught <=200ms 84/123, 7.38 fa/min
+    learned on session_20261121_095106_097514.npz: caught <=200ms 10/17, 7.57 fa/min
+    learned on session_20261121_115113_071950.npz: caught <=200ms 67/125, 4.39 fa/min
 
-saved C:/Users/junio/AppData/Local/Temp/claude/0083734ddbb3c677/a9863aba-0acb-499c-9a20-a20f24c251ed/scratchpad/all.joblib; thresholds by budget {1.0: 0.969, 2.0: 0.96, 4.0: 0.923}
+saved C:\Users\junio\AppData\Local\Temp\claude\0b2633c0c11a899c\a9863aba-0acb-499c-9a20-a20f24c251ed\scratchpad\new.joblib; thresholds by budget {1.0: 0.967, 2.0: 0.948, 4.0: 0.923}
 top features (permutation importance, in-sample, indicative only):
-  mag_rel_l0     0.3107
-  torso_div      0.1768
-  energy_l0      0.0983
-  torso_mag      0.0960
-  disp_rest_l0   0.0952
-  rely           0.0905
-  relx           0.0643
-  width_rate     0.0529
-  other_speed    0.0489
-  speed_l0       0.0473
-  launch_l0      0.0446
-  div_rel_l0     0.0425
+  mag_rel_l0     0.4807
+  energy_l0      0.3724
+  relx           0.2299
+  disp_rest_l2   0.1528
+  rely           0.1448
+  disp_rest_l0   0.0792
+  torso_mag      0.0743
+  launch_l0      0.0674
+  other_speed    0.0417
+  torso_div      0.0398
+  energy_l1      0.0392
+  speed_l1       0.0370

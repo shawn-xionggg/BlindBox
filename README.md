@@ -75,7 +75,8 @@ python dodge_live.py --source 1
 4. **Model:** a gradient-boosted tree classifier (`HistGradientBoostingClassifier`) outputs a "this fist just started a punch" probability. It beeps when the probability crosses the threshold, with a 0.6 s cooldown between beeps.
 5. **Cue rules** in `early_live.py` (table above).
 
-**Honest numbers** (cross-validated on footage the model never trained on; see REPORT.md): about **45% of punches are caught within 200 ms** of the fist leaving guard, at about 2.5 false beeps per minute.
+**Honest numbers** (cross-validated on footage the model never trained on; 378 reviewed punches from 1 performer; see REPORT.md): on 30 fps footage, which matches the live demo, **44% of punches are caught within 200 ms** of the fist leaving guard, at **1.5 false beeps per minute**.
+- The model before the 30 fps session caught only 17% on that footage, because it had only ever seen 20 fps. **Record at the frame rate you demo at:** plugged in, ~30 fps.
 - Prediction *before* the fist moves isn't possible: no signal was found.
 - More data is the biggest lever.
 

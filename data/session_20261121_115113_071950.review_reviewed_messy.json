@@ -53,5 +53,400 @@
   "departure": 4725,
   "family": "HOOK_R",
   "decision": "no"
+ },
+ "11": {
+  "departure": 5135,
+  "family": "JAB",
+  "decision": "yes"
+ },
+ "12": {
+  "departure": 5143,
+  "family": "JAB",
+  "decision": "no"
+ },
+ "13": {
+  "departure": 5500,
+  "family": "HOOK_R",
+  "decision": "no"
+ },
+ "14": {
+  "departure": 5706,
+  "family": "CROSS",
+  "decision": "yes"
+ },
+ "15": {
+  "departure": 5826,
+  "family": "HOOK_L",
+  "decision": "no"
+ },
+ "16": {
+  "departure": 5945,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "17": {
+  "departure": 5967,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "18": {
+  "departure": 6187,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "19": {
+  "departure": 6511,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "20": {
+  "departure": 6703,
+  "family": "HOOK_L",
+  "decision": "no"
+ },
+ "21": {
+  "departure": 6724,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "22": {
+  "departure": 6898,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "23": {
+  "departure": 6975,
+  "family": "CROSS",
+  "decision": "yes"
+ },
+ "24": {
+  "departure": 7402,
+  "family": "CROSS",
+  "decision": "yes"
+ },
+ "25": {
+  "departure": 7709,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "26": {
+  "departure": 8077,
+  "family": "CROSS",
+  "decision": "no"
+ },
+ "27": {
+  "departure": 8267,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "28": {
+  "departure": 8288,
+  "family": "HOOK_L",
+  "decision": "no"
+ },
+ "29": {
+  "departure": 8701,
+  "family": "CROSS",
+  "decision": "yes"
+ },
+ "30": {
+  "departure": 8912,
+  "family": "HOOK_R",
+  "decision": "no"
+ },
+ "31": {
+  "departure": 8975,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "32": {
+  "departure": 8984,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "33": {
+  "departure": 9093,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "34": {
+  "departure": 9111,
+  "family": "HOOK_L",
+  "decision": "no"
+ },
+ "35": {
+  "departure": 10330,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "36": {
+  "departure": 10343,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "37": {
+  "departure": 10352,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "38": {
+  "departure": 10449,
+  "family": "HOOK_L",
+  "decision": "no"
+ },
+ "39": {
+  "departure": 10470,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "40": {
+  "departure": 11201,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "41": {
+  "departure": 11547,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "42": {
+  "departure": 11560,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "43": {
+  "departure": 11756,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "44": {
+  "departure": 11928,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "45": {
+  "departure": 11944,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "46": {
+  "departure": 12203,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "47": {
+  "departure": 12240,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "48": {
+  "departure": 12449,
+  "family": "CROSS",
+  "decision": "no"
+ },
+ "49": {
+  "departure": 12500,
+  "family": "CROSS",
+  "decision": "yes"
+ },
+ "50": {
+  "departure": 12790,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "51": {
+  "departure": 12806,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "52": {
+  "departure": 12993,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "53": {
+  "departure": 13003,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "54": {
+  "departure": 13102,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "55": {
+  "departure": 13247,
+  "family": "CROSS",
+  "decision": "no"
+ },
+ "56": {
+  "departure": 13937,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "57": {
+  "departure": 14043,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "58": {
+  "departure": 14292,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "59": {
+  "departure": 14413,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "60": {
+  "departure": 14719,
+  "family": "HOOK_R",
+  "decision": "no"
+ },
+ "61": {
+  "departure": 14730,
+  "family": "HOOK_R",
+  "decision": "no"
+ },
+ "62": {
+  "departure": 15183,
+  "family": "CROSS",
+  "decision": "no"
+ },
+ "63": {
+  "departure": 15270,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "64": {
+  "departure": 15293,
+  "family": "HOOK_L",
+  "decision": "no"
+ },
+ "65": {
+  "departure": 16136,
+  "family": "HOOK_L",
+  "decision": "no"
+ },
+ "66": {
+  "departure": 16155,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "67": {
+  "departure": 16188,
+  "family": "HOOK_R",
+  "decision": "no"
+ },
+ "68": {
+  "departure": 16759,
+  "family": "CROSS",
+  "decision": "yes"
+ },
+ "69": {
+  "departure": 17328,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "70": {
+  "departure": 17336,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "71": {
+  "departure": 17523,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "72": {
+  "departure": 17710,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "73": {
+  "departure": 18272,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "74": {
+  "departure": 18305,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "75": {
+  "departure": 18316,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "76": {
+  "departure": 18353,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "77": {
+  "departure": 18896,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "78": {
+  "departure": 19084,
+  "family": "CROSS",
+  "decision": "no"
+ },
+ "79": {
+  "departure": 19471,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "80": {
+  "departure": 19560,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "81": {
+  "departure": 19707,
+  "family": "CROSS",
+  "decision": "no"
+ },
+ "82": {
+  "departure": 20008,
+  "family": "HOOK_R",
+  "decision": "no"
+ },
+ "83": {
+  "departure": 20158,
+  "family": "CROSS",
+  "decision": "yes"
+ },
+ "84": {
+  "departure": 20734,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "85": {
+  "departure": 20930,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "86": {
+  "departure": 22033,
+  "family": "JAB",
+  "decision": "yes"
+ },
+ "87": {
+  "departure": 22104,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "88": {
+  "departure": 22132,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "89": {
+  "departure": 22159,
+  "family": "UPPERCUT",
+  "decision": "no"
  }
 }

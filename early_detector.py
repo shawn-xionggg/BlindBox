@@ -221,7 +221,7 @@ def main():
     def launch_scorer(sess):
         return sess["launch"].max(axis=1)
 
-    print(f"\n{'':28s} | caught ≤50ms ≤100 ≤150 ≤200 ≤300 | median  | fa/min | feints")
+    print(f"\n{'':28s} | caught <=50ms <=100 <=150 <=200 <=300 | median  | fa/min | feints")
     for budget in args.budgets:
         acc = {"learned": [[], 0, 0.0, 0, 0], "launch (hand-made)": [[], 0, 0.0, 0, 0]}
         hooks = {k: [] for k in acc}
@@ -257,10 +257,10 @@ def main():
         for label, a in acc.items():
             summarize(label, *a, ms)
             hk = hooks[label]
-            print(f"{'':28s}   hooks only: caught ≤200ms {sum(x is not None and x <= 200 for x in hk)}/{len(hk)}, "
-                  f"≤300ms {sum(x is not None for x in hk)}/{len(hk)}")
+            print(f"{'':28s}   hooks only: caught <=200ms {sum(x is not None and x <= 200 for x in hk)}/{len(hk)}, "
+                  f"<=300ms {sum(x is not None for x in hk)}/{len(hk)}")
         for name, (c, n, f, ns) in per_sess.items():
-            print(f"    learned on {name}: caught ≤200ms {c}/{n}"
+            print(f"    learned on {name}: caught <=200ms {c}/{n}"
                   + (f", {f / (ns / 60):.2f} fa/min" if ns else ""))
 
     # final model on everything + importances

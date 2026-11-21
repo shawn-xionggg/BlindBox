@@ -13,6 +13,20 @@ _2026-11-21, written while you slept. All numbers come from your two reviewed se
   - The model now exports to **plain C** and matches Python exactly (0 differences on 3,001 rows).
   - A QNX process skeleton (cue driver, supervisor, vision stub) exists with real QNX message-passing code. Its crash-recovery test passes here; QNX itself is untested. See its section below.
 
+## Update (2026-11-21 afternoon): 378 punches, first 30 fps session
+- **Session 5:** 12.4 min at **30 fps** (laptop plugged in), 98 punch prompts, 46 GUARD_SHIFTs. Reviewed: 125 punches (81 clean + 44 messy). **378 punches total.**
+- **Frame-rate fix:** label windows and scoring now count **time**, not frames, so 20 and 30 fps sessions are treated the same (`early_dataset.REF_DT`). Catch rates are now reported in ms.
+- **The test that matters (session 5 = live conditions; neither model trained on the scored chunks):**
+
+| Model | Caught within 200 ms | False beeps/min |
+|---|---|---|
+| Previous model (253 punches, all 20 fps) | 21/125 (17%) | 2.1 |
+| **New model** (cross-validated) | **55/125 (44%)** | **1.5** |
+
+- On the older 20 fps sessions it's about the same as before at an equal false-beep rate (42% vs 45%, within error).
+- **Pi version:** `models/early_detector_onnx.joblib` catches 54/125 at 2.0 false beeps/min on session 5. The C export is refreshed and matches Python exactly.
+- The 253-punch models are in `models/archive/`.
+
 ## Update (2026-11-21 late morning): 253 punches, messy punches added
 - **More data:** session 4 (2.6 min, bare fists, new GUARD_SHIFT prompt), plus a new `review_labels.py --messy` pass over punches the old review skipped because the fist wasn't held still first. **121 → 253 reviewed punches.**
 - **Harder, more honest test set:** the held-out punches now include the messy ones, which are harder to catch early. So all numbers are lower than the 121-punch numbers above. That's not a regression, the test got more realistic.
