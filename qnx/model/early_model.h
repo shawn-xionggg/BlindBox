@@ -4,9 +4,7 @@
 
 #define EARLY_N_FEATURES 24
 #define EARLY_FLOW_SCALE 0.25
-#define EARLY_THRESHOLD_BUDGET_1 0.966525843  /* false alarms/min budget */
-#define EARLY_THRESHOLD_BUDGET_2 0.947871191  /* false alarms/min budget */
-#define EARLY_THRESHOLD_BUDGET_4 0.923396783  /* false alarms/min budget */
+#define EARLY_THRESHOLD_BUDGET_2 0.948674894  /* false alarms/min budget */
 
 /* feature order (x[i]); NaN = unknown/missing */
 static const char *const EARLY_FEATURE_NAMES[EARLY_N_FEATURES] = {
