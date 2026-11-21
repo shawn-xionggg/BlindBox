@@ -108,10 +108,19 @@ def main():
     ap.add_argument("--exit-cue", action="store_true",
                     help="experimental: also beep when a fist races out of the side of the frame (exit_cue.py; "
                          "measured +1/59 hooks for +0.2 false alarms/min, so off by default)")
+    ap.add_argument("--esp32", metavar="TARGET",
+                    help="also buzz the ESP32 hat buzzer: a serial port (COM5) or udp:192.168.4.1 (esp32_cue.py)")
     ap.add_argument("--npz", help="with a video source: use this session's saved pose instead of running the model")
     args = ap.parse_args()
     if args.max_seconds is not None and args.max_seconds <= 0:
         ap.error("--max-seconds must be positive")
+    esp = None
+    if args.esp32:
+        from esp32_cue import Esp32Cue
+        esp = Esp32Cue(args.esp32)
+        rtt = esp.ping()
+        print(f"ESP32 buzzer on {args.esp32}: " + (f"round trip {rtt:.1f} ms" if rtt is not None
+              else "NO REPLY (check port / WiFi / firmware); cues will still be sent"), flush=True)
     ipc = None
     if args.ipc:
         from cue_client import CueClient, capture_ns, monotonic_ns
@@ -183,6 +192,8 @@ def main():
             out = det.update(t, frame, kps, conf)
             if ipc is not None:
                 ipc.send_heartbeat()  # exactly the processed-frame liveness signal
+            if esp is not None:
+                esp.heartbeat()       # ESP32 sounds a "laptop gone" alarm if these stop
             ms = (time.perf_counter() - t0) * 1000
             proc.append(ms)
             ev = out["event"]
@@ -192,6 +203,8 @@ def main():
                     ev = dict(time=t, wrist=xe["wrist"], side=xe["side"].upper(), score=1.0)
             if ev:
                 name, freq, dur = DIRECTIONAL[ev["side"]] if args.directional else UNIVERSAL
+                if esp is not None:
+                    esp.send(name)    # first: the hat buzzer is what the wearer hears
                 if not args.headless and not args.no_beep:
                     beep(freq, dur)  # pre-rendered tone, ~6 ms buffer
                 if ipc is not None:
@@ -225,6 +238,8 @@ def main():
                     break
             i += 1
     finally:
+        if esp is not None:
+            esp.close()               # 'X' goodbye: clean exit, no alarm
         if ipc is not None:
             ipc.close()
         if capture is not None:
