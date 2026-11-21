@@ -1,0 +1,12 @@
+# Core (record, label, train, run the live demo). Tested with Python 3.13 on Windows.
+ultralytics>=8.3        # pulls in torch; runs yolo11n-pose.pt
+opencv-python>=4.10
+numpy>=2.0
+scikit-learn>=1.7       # saved models need a recent version to load
+joblib
+onnxruntime>=1.20       # ONNX pose (the Pi path) + repose_onnx.py / check_* scripts
+pytest
+
+# Optional: only to re-make the TFLite pose model (check_tflite_pose.py)
+# tensorflow>=2.21
+# onnx2tf>=2.6

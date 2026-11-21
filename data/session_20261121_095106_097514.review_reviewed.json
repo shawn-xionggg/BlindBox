@@ -1,0 +1,27 @@
+{
+ "0": {
+  "departure": 107,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "1": {
+  "departure": 818,
+  "family": "CROSS",
+  "decision": "yes"
+ },
+ "2": {
+  "departure": 937,
+  "family": "CROSS",
+  "decision": "yes"
+ },
+ "3": {
+  "departure": 1500,
+  "family": "JAB",
+  "decision": "yes"
+ },
+ "4": {
+  "departure": 1905,
+  "family": "JAB",
+  "decision": "yes"
+ }
+}

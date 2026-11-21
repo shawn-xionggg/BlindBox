@@ -1,0 +1,292 @@
+{
+ "0": {
+  "departure": 122,
+  "family": "JAB",
+  "decision": "yes"
+ },
+ "1": {
+  "departure": 191,
+  "family": "JAB",
+  "decision": "yes"
+ },
+ "2": {
+  "departure": 255,
+  "family": "JAB",
+  "decision": "yes"
+ },
+ "3": {
+  "departure": 276,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "4": {
+  "departure": 323,
+  "family": "JAB",
+  "decision": "yes"
+ },
+ "5": {
+  "departure": 357,
+  "family": "JAB",
+  "decision": "yes"
+ },
+ "6": {
+  "departure": 362,
+  "family": "JAB",
+  "decision": "yes"
+ },
+ "7": {
+  "departure": 388,
+  "family": "JAB",
+  "decision": "yes"
+ },
+ "8": {
+  "departure": 431,
+  "family": "JAB",
+  "decision": "yes"
+ },
+ "9": {
+  "departure": 462,
+  "family": "JAB",
+  "decision": "no"
+ },
+ "10": {
+  "departure": 470,
+  "family": "JAB",
+  "decision": "no"
+ },
+ "11": {
+  "departure": 565,
+  "family": "JAB",
+  "decision": "no"
+ },
+ "12": {
+  "departure": 607,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "13": {
+  "departure": 634,
+  "family": "CROSS",
+  "decision": "yes"
+ },
+ "14": {
+  "departure": 663,
+  "family": "CROSS",
+  "decision": "yes"
+ },
+ "15": {
+  "departure": 758,
+  "family": "JAB",
+  "decision": "yes"
+ },
+ "16": {
+  "departure": 784,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "17": {
+  "departure": 1008,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "18": {
+  "departure": 1055,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "19": {
+  "departure": 1077,
+  "family": "JAB",
+  "decision": "yes"
+ },
+ "20": {
+  "departure": 1140,
+  "family": "JAB",
+  "decision": "yes"
+ },
+ "21": {
+  "departure": 1202,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "22": {
+  "departure": 1267,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "23": {
+  "departure": 1300,
+  "family": "JAB",
+  "decision": "yes"
+ },
+ "24": {
+  "departure": 1328,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "25": {
+  "departure": 1573,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "26": {
+  "departure": 1600,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "27": {
+  "departure": 1733,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "28": {
+  "departure": 1768,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "29": {
+  "departure": 1873,
+  "family": "JAB",
+  "decision": "no"
+ },
+ "30": {
+  "departure": 1961,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "31": {
+  "departure": 2118,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "32": {
+  "departure": 2437,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "33": {
+  "departure": 2562,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "34": {
+  "departure": 2589,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "35": {
+  "departure": 2624,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "36": {
+  "departure": 2658,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "37": {
+  "departure": 2680,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "38": {
+  "departure": 2780,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "39": {
+  "departure": 2879,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "40": {
+  "departure": 2909,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "41": {
+  "departure": 2941,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "42": {
+  "departure": 3060,
+  "family": "HOOK_L",
+  "decision": "no"
+ },
+ "43": {
+  "departure": 3173,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "44": {
+  "departure": 3417,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "45": {
+  "departure": 3548,
+  "family": "JAB",
+  "decision": "no"
+ },
+ "46": {
+  "departure": 3599,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "47": {
+  "departure": 3656,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "48": {
+  "departure": 3688,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "49": {
+  "departure": 4056,
+  "family": "JAB",
+  "decision": "no"
+ },
+ "50": {
+  "departure": 4072,
+  "family": "JAB",
+  "decision": "no"
+ },
+ "51": {
+  "departure": 4142,
+  "family": "JAB",
+  "decision": "no"
+ },
+ "52": {
+  "departure": 4267,
+  "family": "JAB",
+  "decision": "no"
+ },
+ "53": {
+  "departure": 4334,
+  "family": "STEP_IN",
+  "decision": "no"
+ },
+ "54": {
+  "departure": 4347,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "55": {
+  "departure": 4491,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "56": {
+  "departure": 4555,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "57": {
+  "departure": 4650,
+  "family": "HOOK_R",
+  "decision": "yes"
+ }
+}

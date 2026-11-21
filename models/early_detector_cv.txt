@@ -1,0 +1,35 @@
+building session_20261121_024335_748065.npz
+building session_20261121_030328_194149.npz
+building session_20261121_095106_097514.npz
+
+                             | caught +1    +2    +3    +4    +6 | median  | fa/min | feints
+--- threshold picked on training blocks for <= 1 false alarms/min ---
+learned                      |   12%   18%   21%   28%   35% |    96ms |   1.31 | 12/20
+                               hooks only: caught +4 27/124, +6 32/124
+launch (hand-made)           |    0%    2%    6%   13%   24% |   193ms |   1.02 | 1/20
+                               hooks only: caught +4 17/124, +6 28/124
+--- threshold picked on training blocks for <= 2 false alarms/min ---
+learned                      |   22%   31%   37%   45%   51% |    96ms |   2.47 | 16/20
+                               hooks only: caught +4 48/124, +6 53/124
+launch (hand-made)           |    0%    6%   13%   22%   37% |   193ms |   2.18 | 1/20
+                               hooks only: caught +4 27/124, +6 39/124
+--- threshold picked on training blocks for <= 4 false alarms/min ---
+learned                      |   38%   48%   56%   62%   68% |    48ms |   5.97 | 19/20
+                               hooks only: caught +4 69/124, +6 78/124
+launch (hand-made)           |    4%   12%   23%   32%   47% |   193ms |   4.22 | 8/20
+                               hooks only: caught +4 38/124, +6 49/124
+
+saved C:/Users/junio/AppData/Local/Temp/claude/0083734ddbb3c677/a9863aba-0acb-499c-9a20-a20f24c251ed/scratchpad/all.joblib; thresholds by budget {1.0: 0.969, 2.0: 0.96, 4.0: 0.923}
+top features (permutation importance, in-sample, indicative only):
+  mag_rel_l0     0.3107
+  torso_div      0.1768
+  energy_l0      0.0983
+  torso_mag      0.0960
+  disp_rest_l0   0.0952
+  rely           0.0905
+  relx           0.0643
+  width_rate     0.0529
+  other_speed    0.0489
+  speed_l0       0.0473
+  launch_l0      0.0446
+  div_rel_l0     0.0425

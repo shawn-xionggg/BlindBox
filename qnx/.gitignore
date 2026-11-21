@@ -1,0 +1,6 @@
+/bin/*
+!/bin/.gitkeep
+/test-output.log
+/test-case-output.log
+/test events with spaces.csv
+/__pycache__/

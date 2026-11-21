@@ -1,0 +1,57 @@
+{
+ "0": {
+  "departure": 1146,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "1": {
+  "departure": 3683,
+  "family": "HOOK_R",
+  "decision": "no"
+ },
+ "2": {
+  "departure": 3843,
+  "family": "HOOK_R",
+  "decision": "no"
+ },
+ "3": {
+  "departure": 3855,
+  "family": "HOOK_R",
+  "decision": "no"
+ },
+ "4": {
+  "departure": 3867,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "5": {
+  "departure": 3881,
+  "family": "HOOK_R",
+  "decision": "no"
+ },
+ "6": {
+  "departure": 4117,
+  "family": "CROSS",
+  "decision": "yes"
+ },
+ "7": {
+  "departure": 4512,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "8": {
+  "departure": 4522,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "9": {
+  "departure": 4698,
+  "family": "HOOK_R",
+  "decision": "yes"
+ },
+ "10": {
+  "departure": 4725,
+  "family": "HOOK_R",
+  "decision": "no"
+ }
+}

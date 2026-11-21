@@ -1,0 +1,41 @@
+# --- videos: too big for git (GitHub rejects files > 100 MB) and they show people.
+# Share them another way (Drive / USB). Training only needs the npz + labels + features/.
+*.mp4
+*.avi
+data/archive/
+# contact sheets = frames of the performer; regenerate with auto_label.py
+auto_label_review/
+
+# --- python / tool junk
+__pycache__/
+*.pyc
+.pytest_cache/
+anticipation_test_*/
+*.labels.tmp
+
+# --- run logs (regenerated every run)
+dodge_log.csv
+cues.csv
+cues_ttc.csv
+bridge-output.log
+qnx/test-output.log
+
+# --- build outputs (rebuild with make / the tests)
+qnx/bin/
+*.exe
+*.o
+qnx/model/test_model.c
+qnx/model/test_rows.txt
+qnx/pose/test_outputs.bin
+
+# --- unused / unusable model files
+yolo11s-pose.pt
+yolo11n-pose_tflite/yolo11n-pose_float16.tflite
+yolo11n-pose_tflite/schema*
+yolo11n-pose_tflite/*tensor_correspondence_report.json
+
+# --- never commit secrets or QNX license keys
+.env
+*.key
+*license*
+.claude/settings.local.json

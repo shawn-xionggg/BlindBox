@@ -1,0 +1,82 @@
+{
+ "0": {
+  "departure": 118,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "1": {
+  "departure": 203,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "2": {
+  "departure": 297,
+  "family": "JAB",
+  "decision": "no"
+ },
+ "3": {
+  "departure": 709,
+  "family": "CROSS",
+  "decision": "yes"
+ },
+ "4": {
+  "departure": 1060,
+  "family": "CROSS",
+  "decision": "yes"
+ },
+ "5": {
+  "departure": 1061,
+  "family": "CROSS",
+  "decision": "yes"
+ },
+ "6": {
+  "departure": 1631,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "7": {
+  "departure": 1680,
+  "family": "CROSS",
+  "decision": "yes"
+ },
+ "8": {
+  "departure": 1842,
+  "family": "UPPERCUT",
+  "decision": "no"
+ },
+ "9": {
+  "departure": 1854,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "10": {
+  "departure": 1859,
+  "family": "UPPERCUT",
+  "decision": "yes"
+ },
+ "11": {
+  "departure": 2150,
+  "family": "CROSS",
+  "decision": "no"
+ },
+ "12": {
+  "departure": 2195,
+  "family": "CROSS",
+  "decision": "yes"
+ },
+ "13": {
+  "departure": 2420,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "14": {
+  "departure": 2426,
+  "family": "HOOK_L",
+  "decision": "yes"
+ },
+ "15": {
+  "departure": 2826,
+  "family": "HOOK_R",
+  "decision": "yes"
+ }
+}
