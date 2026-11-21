@@ -12,6 +12,7 @@ A HackWestern project for the **QNX track**. A blindfolded person wears a hat wi
 > - [qnx/README.md](qnx/README.md): QNX processes
 > - [DEMO_SCRIPT.md](DEMO_SCRIPT.md): judge demo
 > - [PLAN-qnx-boxing-assistant.md](PLAN-qnx-boxing-assistant.md): original plan
+> - **[HEAD_MOUNTED_TRAINING.md](HEAD_MOUNTED_TRAINING.md): the final training, with the camera on the wearer's head. Start here for new data.**
 > - [TEAMMATE_AUGMENTATION_GUIDE.md](TEAMMATE_AUGMENTATION_GUIDE.md): run the lighting / frame-rate training on a fast machine
 
 ---
@@ -90,7 +91,7 @@ The loop is **record → auto-label → review → train**. Every new session ma
 ### 4.1 Record
 
 ```powershell
-python collect.py --source 1 --script --performer <your-name>
+python collect.py --source 1 --script --mount head --performer <your-name> --wearer <wearer-name>
 ```
 
 Yellow text on screen tells the puncher what to do every 2–4 s. **Do every action as shown, bare-fisted** (the demo uses bare fists).

@@ -127,6 +127,11 @@ def main():
     ap.add_argument("--no-flow", action="store_true", help="drop optical-flow features (plain-C portability test)")
     ap.add_argument("--clean-train", action="store_true",
                     help="train only on clean-reviewed punches (still scored on all reviewed punches)")
+    ap.add_argument("--test-mount", choices=("head", "desk"),
+                    help="score only held-out chunks of sessions recorded with this camera mount "
+                         "(and pick the alarm threshold from that mount's don't-punch footage)")
+    ap.add_argument("--train-mount", choices=("head", "desk"),
+                    help="train only on sessions recorded with this camera mount")
     ap.add_argument("--aug-data", help="folder of augmented copies (augment_lighting.py); always scored, "
                     "held-out chunk by held-out chunk")
     ap.add_argument("--aug-train", action="store_true", help="also TRAIN on the augmented copies")
@@ -141,7 +146,12 @@ def main():
     sessions = []
     for p in paths:
         print("building", p.name)
-        sessions.append(early_dataset.build(p))
+        s = early_dataset.build(p)
+        zf = np.load(p)
+        # sessions recorded before collect.py had --mount were all fixed-camera ("desk")
+        s["mount"] = str(zf["mount"]) if "mount" in zf.files else "desk"
+        sessions.append(s)
+    print("camera mounts:", {m: sum(s["mount"] == m for s in sessions) for m in ("head", "desk")}, "sessions")
     names = sessions[0]["names"]
     if args.clean_train:
         for p, s in zip(paths, sessions):
@@ -261,9 +271,18 @@ def main():
         per_sess = {}
         per_aug = {}
         for fi, (si, lo, hi) in enumerate(folds):
-            train_blocks = [f for j, f in enumerate(folds) if j != fi]
+            if args.test_mount and sessions[si]["mount"] != args.test_mount:
+                continue
+            train_blocks = [f for j, f in enumerate(folds) if j != fi
+                            and (not args.train_mount or sessions[f[0]]["mount"] == args.train_mount)]
+            if not train_blocks:
+                raise SystemExit(f"nothing to train on: no other sessions recorded with --mount {args.train_mount}")
             clf = train(train_blocks)
             tb = [(sessions[a], b, c) for a, b, c in train_blocks]
+            if args.test_mount and any(s_["mount"] == args.test_mount for s_, _, _ in tb):
+                # the threshold must fit the mount we deploy with: head-camera footage has its own
+                # false alarms (the wearer's head moving), so tune on those
+                tb = [x for x in tb if x[0]["mount"] == args.test_mount]
             for label, scorer in (("learned", model_scorer(clf)), ("launch (hand-made)", launch_scorer)):
                 thr = threshold_for_budget(tb, scorer, budget)
                 s = sessions[si]
@@ -311,8 +330,12 @@ def main():
                   + (f", {f / (ns / 60):.2f} fa/min" if ns else ""))
 
     # final model on everything + importances
-    clf = train(folds)
-    thr = {b: threshold_for_budget([(sessions[a], b2, c) for a, b2, c in folds], model_scorer(clf), b)
+    final_folds = [f for f in folds if not args.train_mount or sessions[f[0]]["mount"] == args.train_mount]
+    if not final_folds:
+        raise SystemExit(f"no sessions recorded with --mount {args.train_mount} yet")
+    clf = train(final_folds)
+    thr_folds = [f for f in folds if not args.test_mount or sessions[f[0]]["mount"] == args.test_mount] or folds
+    thr = {b: threshold_for_budget([(sessions[a], b2, c) for a, b2, c in thr_folds], model_scorer(clf), b)
            for b in args.budgets}
     Path(args.save).parent.mkdir(exist_ok=True)
     import flow_features

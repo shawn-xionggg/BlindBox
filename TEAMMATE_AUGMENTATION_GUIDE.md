@@ -84,6 +84,8 @@ Check the sizes:
 
 Total: about 476 MB.
 
+**If more sessions are added later** (for example head-mounted ones, see [HEAD_MOUNTED_TRAINING.md](HEAD_MOUNTED_TRAINING.md)): the script uses **every** reviewed session in `data/`, so you need **every** session's `.mp4`. `--check-only` lists any that are missing. Once head-mounted data exists, add `--test-mount head` to the run command, so results are scored on head-mounted footage.
+
 ---
 
 ## 3. Get the latest code

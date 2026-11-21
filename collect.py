@@ -14,7 +14,7 @@ import shutil
 from uuid import uuid4
 import cv2
 import numpy as np
-from pose_features import PoseRunner, FeatureStream, GloveOnset, COMMANDS, SAFETY
+from pose_features import PoseRunner, FeatureStream, GloveOnset, COMMANDS, NEGATIVES, SAFETY
 from glove_features import GloveSegmenter, PRESETS
 from launch_detector import LaunchDetector
 from live_runtime import LatestCapture, VideoSink, StageTimings
@@ -65,7 +65,7 @@ def text(frame, message, y, color=(255, 255, 255), scale=.48):
     cv2.putText(frame, message, (10, y), cv2.FONT_HERSHEY_SIMPLEX, scale, color, 1, cv2.LINE_AA)
 
 
-def save_session(path, timestamps, keypoints, confidences, labels, rejected, model, source, session_id=None, glove_blobs=None, commands=(), command_times=(), performer="unknown"):
+def save_session(path, timestamps, keypoints, confidences, labels, rejected, model, source, session_id=None, glove_blobs=None, commands=(), command_times=(), performer="unknown", mount="desk", wearer=""):
     labels = sorted(labels, key=lambda e: e['frame'])
     np.savez_compressed(path, timestamps=np.asarray(timestamps),
         keypoints=np.asarray(keypoints).reshape(-1, 17, 2),
@@ -76,6 +76,7 @@ def save_session(path, timestamps, keypoints, confidences, labels, rejected, mod
         detected_times=np.asarray([e.get('detected_time', timestamps[e['frame']]) for e in labels]),
         rejected_frames=np.asarray(rejected, dtype=int), pose_model=str(model), source=str(source),
         session_id=str(session_id or Path(path).stem), performer=str(performer),
+        mount=str(mount), wearer=str(wearer),
         glove_blobs=np.asarray(glove_blobs if glove_blobs is not None else np.full((len(timestamps), 2, 3), np.nan)),
         commands=np.asarray(commands, dtype='<U16'), command_times=np.asarray(command_times, dtype=float),
         onset_families=np.asarray([e.get('family', 'UNKNOWN') for e in labels], dtype='<U16'))
@@ -98,12 +99,22 @@ def main():
     ap.add_argument('--color', choices=PRESETS)
     ap.add_argument('--script', action='store_true', help='Visual-only randomized commands every 2-4 s')
     ap.add_argument('--performer', default='unknown')
+    ap.add_argument('--mount', choices=('head', 'desk'),
+                    help="where the camera is: 'head' = on the wearer's hat (the real use), 'desk' = fixed. "
+                         "Required for live recording; saved in the session so training can tell them apart")
+    ap.add_argument('--wearer', default='', help="who wore the camera (head mount)")
+    ap.add_argument('--negatives-only', action='store_true',
+                    help="with --script: only don't-punch prompts (for wearer head-motion footage)")
     ap.add_argument('--glove-thresh', type=float, default=3., help='Relative-area log growth per second')
     args = ap.parse_args()
     if args.benchmark_frames <= 0 or args.launch_thresh <= 0:
         ap.error("Frame limit and launch threshold must be positive")
     if args.opencv_threads < 1:
         ap.error("--opencv-threads must be positive")
+    if not (args.benchmark or args.from_video) and str(args.source).isdigit() and args.mount is None:
+        ap.error("say where the camera is: --mount head (on the wearer's hat) or --mount desk (fixed)")
+    if args.negatives_only and not args.script:
+        ap.error("--negatives-only needs --script")
     cv2.setNumThreads(args.opencv_threads)
     runner = PoseRunner(args.model, args.imgsz)
     source = args.benchmark or args.from_video or args.source
@@ -180,7 +191,8 @@ def main():
             if args.script and original is None and t >= next_command:
                 # GUARD_SHIFT twice as often: sliding the guard sideways is the
                 # top false beep live and the older sessions never recorded it
-                commands.append(random.choice(COMMANDS + ('GUARD_SHIFT',)))
+                pool = NEGATIVES if args.negatives_only else COMMANDS + ('GUARD_SHIFT',)
+                commands.append(random.choice(pool))
                 command_times.append(t)
                 next_command = t+random.uniform(2, 4)
             with timings.stage('glove segmentation'):
@@ -266,7 +278,9 @@ def main():
             labels = [e for e in labels if e['frame'] < len(times)]
             identity = str(original.get('session_id', paired.stem)) if original is not None else None
             save_session(stem.with_suffix('.npz'), times, points, confidences, labels, rejected, args.model, source, identity, raw_blobs, commands, command_times,
-                         str(original.get('performer', args.performer)) if original is not None else args.performer)
+                         str(original.get('performer', args.performer)) if original is not None else args.performer,
+                         str(original['mount']) if original is not None and 'mount' in original else (args.mount or 'desk'),
+                         str(original['wearer']) if original is not None and 'wearer' in original else args.wearer)
             if original is not None and paired.with_suffix('.labels.json').exists():
                 shutil.copyfile(paired.with_suffix('.labels.json'), stem.with_suffix('.labels.json'))
             print(f'Saved {stem}.npz and .mp4: {len(times)} frames, {len(labels)} onsets. NPZ timestamps are authoritative (live inference may lower capture fps).')

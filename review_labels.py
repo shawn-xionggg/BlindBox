@@ -138,7 +138,10 @@ def main():
         cands = [c for c in cands if "guess" not in c
                  or c["family"] in ("JAB", "CROSS", "HOOK_L", "HOOK_R", "UPPERCUT")]
     if not cands:
-        raise SystemExit("No candidates to review.")
+        # e.g. a --negatives-only session: no punches to review. Save an empty label set
+        # so training still uses it (as known don't-punch footage).
+        save_labels(npz.with_suffix(".labels.json"), "reviewed_messy" if args.messy else args.labeler, [])
+        raise SystemExit("No punch candidates to review; saved empty labels (session still used for training).")
     timestamps = np.load(npz, allow_pickle=False)["timestamps"]
     progress_path = npz.with_suffix(f".review_{args.labeler}{'_all' if args.all else ''}.json")
     labels_path = npz.with_suffix(".labels.json")

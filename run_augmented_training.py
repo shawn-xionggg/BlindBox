@@ -38,12 +38,10 @@ PYTHON_OK = (3, 13)
 EXACT = {"scikit-learn": "1.9.1", "numpy": "2.2.6", "joblib": "1.6.0"}
 # These should match (small keypoint / flow differences otherwise), but won't break anything.
 SHOULD = {"ultralytics": "8.4.216", "opencv-python": "4.13.0.92", "onnxruntime": "1.26.0"}
-SESSIONS = [
-    "session_20261121_024335_748065",
-    "session_20261121_030328_194149",
-    "session_20261121_095106_097514",
-    "session_20261121_115113_071950",
-]
+# Every reviewed session in data/ (each needs its .mp4 locally for this run).
+SESSIONS = sorted(p.stem for p in (ROOT / "data").glob("*.npz")
+                  if p.with_suffix(".labels.json").exists() and p.with_suffix(".auto_candidates.json").exists())
+SMOKE_SOURCE = "session_20261121_095106_097514"   # smallest session, used by --smoke
 PRESETS = ["dim_blur", "bright"]
 FPS = [15]
 
@@ -57,7 +55,7 @@ def banner(msg):
 
 
 # ----------------------------------------------------------------------------- 1. check
-def check(sessions, data_dir, need_gb):
+def check(sessions, data_dir, need_gb, onnx_dir=None):
     banner("1/5 CHECK")
     ok = True
     v = sys.version_info
@@ -113,6 +111,10 @@ def check(sessions, data_dir, need_gb):
             ok = False
         else:
             say(f"  ok    {mp4.name}: {n_vid} frames ({mp4.stat().st_size / 1e6:.0f} MB)")
+        if onnx_dir is not None and not (onnx_dir / f"{stem}_onnx.npz").exists():
+            say(f"  FAIL  {onnx_dir}/{stem}_onnx.npz missing: run  python repose_onnx.py {npz}  "
+                "(or use --skip-pi)")
+            ok = False
     for need in ("data_onnx", "features"):
         if not Path(need).is_dir():
             say(f"  FAIL  folder {need}/ missing (git pull?)")
@@ -221,7 +223,7 @@ def pi_copies(sessions, aug_dir, onnx_dir, out_dir):
 
 
 # ----------------------------------------------------------------------------- 5. train
-def train(run_dir, data_dir, aug_dir, onnx_dir, onnx_aug_dir, skip_pi):
+def train(run_dir, data_dir, aug_dir, onnx_dir, onnx_aug_dir, skip_pi, test_mount=None):
     banner("5/5 TRAIN (4 cross-validated trainings; logs in " + str(run_dir) + ")")
     run_dir.mkdir(parents=True, exist_ok=True)
     jobs = [("laptop_baseline", ["--data", str(data_dir), "--aug-data", str(aug_dir)]),
@@ -237,7 +239,8 @@ def train(run_dir, data_dir, aug_dir, onnx_dir, onnx_aug_dir, skip_pi):
         say(f"  run   {name} ... (log: {log})")
         t0 = time.time()
         with open(log, "w", encoding="utf-8") as fh:
-            r = subprocess.run([sys.executable, "early_detector.py", *extra, "--budgets", "2",
+            mount = ["--test-mount", test_mount] if test_mount else []
+            r = subprocess.run([sys.executable, "early_detector.py", *extra, *mount, "--budgets", "2",
                                 "--save", str(run_dir / f"{name}.joblib")],
                                stdout=fh, stderr=subprocess.STDOUT, env={**os.environ, "PYTHONIOENCODING": "utf-8"})
         if r.returncode:
@@ -322,6 +325,8 @@ def main():
     ap.add_argument("--check-only", action="store_true", help="only run the checks")
     ap.add_argument("--smoke", action="store_true", help="tiny end-to-end test (about a minute), in smoke_test/")
     ap.add_argument("--skip-pi", action="store_true", help="skip the Pi (ONNX) copies and trainings")
+    ap.add_argument("--test-mount", choices=("head", "desk"),
+                    help="score only on sessions recorded with this camera mount (use 'head' once head data exists)")
     ap.add_argument("--run-name", default=time.strftime("aug_%Y%m%d_%H%M"), help="folder name under runs/")
     args = ap.parse_args()
 
@@ -331,7 +336,7 @@ def main():
             shutil.rmtree(base)
         data_dir, aug_dir = base / "data", base / "data_aug"
         onnx_dir, onnx_aug_dir = base / "data_onnx", base / "data_onnx_aug"
-        make_smoke_slice(SESSIONS[2], Path("data"), data_dir)
+        make_smoke_slice(SMOKE_SOURCE if SMOKE_SOURCE in SESSIONS else SESSIONS[0], Path("data"), data_dir)
         stem = SMOKE
         sessions = [stem]
         check(sessions, data_dir, need_gb=1)
@@ -366,7 +371,7 @@ def main():
 
     data_dir, aug_dir = Path("data"), Path("data_aug")
     onnx_dir, onnx_aug_dir = Path("data_onnx"), Path("data_onnx_aug")
-    check(SESSIONS, data_dir, need_gb=8)
+    check(SESSIONS, data_dir, need_gb=8, onnx_dir=None if args.skip_pi else onnx_dir)
     if args.check_only:
         return
     t_all = time.time()
@@ -376,7 +381,7 @@ def main():
     if not args.skip_pi:
         pi_copies(SESSIONS, aug_dir, onnx_dir, onnx_aug_dir)
         build_features(onnx_aug_dir)
-    train(Path("runs") / args.run_name, data_dir, aug_dir, onnx_dir, onnx_aug_dir, args.skip_pi)
+    train(Path("runs") / args.run_name, data_dir, aug_dir, onnx_dir, onnx_aug_dir, args.skip_pi, args.test_mount)
     say(f"\nALL DONE in {(time.time() - t_all) / 60:.0f} min. Next: commit runs/{args.run_name}/ "
         "(see the guide, step 8).")
 

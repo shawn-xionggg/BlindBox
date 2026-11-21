@@ -16,6 +16,9 @@ features/*_dim.*
 features/*_fps[0-9]*.*
 features/smokeslice*
 
+# candidate models while comparing (install the winner into models/)
+models/candidates/
+
 # --- python / tool junk
 __pycache__/
 *.pyc
