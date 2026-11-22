@@ -54,6 +54,7 @@ python dodge_live.py --source 1
 | `--universal` | One "INCOMING" beep for every punch instead of direction cues. |
 | `--source data/x.mp4 --npz data/x.npz --headless` | Replay a recorded session without a camera. |
 | `--pose yolo11n-pose.onnx --model models/early_detector_onnx.joblib` | Run exactly what the Pi will run (ONNX pose + the detector trained on ONNX keypoints). |
+| `--esp32 COM5` or `--esp32 udp:192.168.4.1` | Also buzz the **ESP32 hat buzzer** (wiring, flashing and testing: [esp32/README.md](esp32/README.md)). Add `--no-beep` to silence the laptop. |
 | `--exit-cue` | Experimental: also beep when a fist races out the side of the frame. Measured as almost useless, so it's off by default. |
 
 ### What each cue means
