@@ -13,6 +13,7 @@ Fast way, with the mouse:
   click the timeline bar to jump there
   click the big picture (or a thumbnail)  = this frame is the START   (key: s)
   click a TYPE button (JAB, CROSS, HOOK..., UPPERCUT) = it's a punch of that type -> next
+                (paused on another frame? that frame becomes the start: scroll there, click the type)
   click NO / FEINT = not a punch / a fake start -> next;  BACK = previous candidate
 
 Keys:
@@ -119,6 +120,8 @@ def render(cand, state, frames, loop_off, pos, total, timestamps, labeler="revie
     cv2.rectangle(big, (0, 0), (479, 359), col, 8 if loop_off == 0 else 1)
     dt_ms = 1000 * (timestamps[min(dep + loop_off, len(timestamps) - 1)] - timestamps[dep]) if 0 <= dep + loop_off < len(timestamps) else 0
     _put(big, ("START  " if loop_off == 0 else "") + f"{loop_off:+d} fr ({dt_ms:+.0f} ms)", (10, 32), .8, col, 2)
+    if paused and loop_off != 0:
+        _put(big, "click a TYPE = punch starts HERE", (10, 322), .6, (0, 255, 255), 2)
     _put(big, "PAUSED - space to play" if paused else f"playing ({ms} ms/frame)", (10, 350), .55, (255, 255, 255))
     canvas[0:360, 0:480] = big
     # timeline: the whole clip; green = start, yellow = the computer's peak, white = on show
@@ -167,7 +170,7 @@ def render(cand, state, frames, loop_off, pos, total, timestamps, labeler="revie
         cv2.rectangle(canvas, (x0, by0), (x1, by1), (200, 200, 200), 1)
         (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, .5, 1)
         _put(canvas, label, (x0 + (x1 - x0 - tw) // 2, by0 + (by1 - by0 + th) // 2), .5, (255, 255, 255))
-    _put(canvas, "scroll / a d = 1 frame   click picture or s = START", (495, 350), .45, (180, 255, 180))
+    _put(canvas, "scroll to the start frame, then click the type", (495, 350), .45, (180, 255, 180))
     _put(canvas, "keys: y n f  , .  1-5 type  - = speed  b back  q quit", (495, 166), .45, (180, 255, 180))
     return canvas
 
@@ -311,8 +314,11 @@ def main():
     cv2.setMouseCallback(win, on_mouse)
 
     def decide(st, decision, family=None):
-        """Record a decision; returns False when it was the last candidate."""
+        """Record a decision; returns False when it was the last candidate. A punch or feint
+        decided while paused on another frame starts at the frame on show (you scrolled to it)."""
         nonlocal pos, paused
+        if decision in ("yes", "feint") and paused and offs[loop_i] != 0:
+            st["departure"] = int(np.clip(st["departure"] + offs[loop_i], 0, n_frames - 1))
         if family:
             st["family"] = family
         st["decision"], st["rule"] = decision, RULE

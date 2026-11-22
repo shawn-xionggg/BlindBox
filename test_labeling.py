@@ -101,7 +101,7 @@ class ReviewToolTests(unittest.TestCase):
 
     def test_step_frames_and_click_to_set_start(self):
         with workspace_temp() as tmp:
-            npz = write_session(tmp, [cand(100), cand(150), cand(200), cand(250), cand(300)])
+            npz = write_session(tmp, [cand(100), cand(150), cand(200), cand(250), cand(300), cand(350)])
             # each candidate opens paused on its start frame
             # 1: 'd' 'd' step 2 frames forward, 's' = start there, 'y'
             # 2: click the first thumbnail (offset -2) = start there, 'y'
@@ -116,10 +116,12 @@ class ReviewToolTests(unittest.TestCase):
                              ('click', 5, rl.STRIP_Y + 10), 'y',
                              ('wheel', 1), ('wheel', 1), ('wheel', 1), ('click', 100, 100), mid(cross),
                              ('click', 2, rl.TIMELINE[0] + 5), 's', mid(no),
-                             mid(hook)])
+                             mid(hook),
+                             # 6: scroll down 4 frames and click the type straight away = start there
+                             ('wheel', -1), ('wheel', -1), ('wheel', -1), ('wheel', -1), mid(cross)])
             marks = labels_of(npz)['reviewed']
             self.assertEqual([(m['departure'], m['family']) for m in marks],
-                             [(102, 'JAB'), (148, 'JAB'), (197, 'CROSS'), (300, 'HOOK_L')])
+                             [(102, 'JAB'), (148, 'JAB'), (197, 'CROSS'), (300, 'HOOK_L'), (354, 'CROSS')])
             states = json.loads(npz.with_suffix('.review_reviewed.json').read_text())
             self.assertEqual((states['3']['decision'], states['3']['departure']), ('no', 235))
 
