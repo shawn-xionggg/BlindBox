@@ -36,6 +36,7 @@
 
 #include <WiFi.h>
 #include <WiFiUdp.h>
+#include "HWCDC.h"
 #if defined(__has_include)
 #if __has_include(<esp_arduino_version.h>)
 #include <esp_arduino_version.h>
@@ -136,11 +137,19 @@ void play(uint8_t mask, uint16_t freq, uint16_t ms) {
   if (toneEndMs == 0) toneEndMs = 1;
 }
 
+// Where the byte being handled came from, so a ping reply goes back the same way.
+// The built-in USB port (USB 303a:1001) needs no baud rate: the QNX Pi uses it, because
+// it can't set the UART chip's baud (that USB request crashes the Pi's USB stack).
+HWCDC NativeUSB;                 // the built-in USB port (core 3.x makes HWCDCSerial only with CDC-on-boot)
+bool fromNativeUsb = false;
+
 void reply(char c, bool fromUdp) {
   if (fromUdp) {
     udp.beginPacket(udp.remoteIP(), udp.remotePort());
     udp.write((uint8_t)c);
     udp.endPacket();
+  } else if (fromNativeUsb) {
+    NativeUSB.write(c);
   } else {
     Serial.write(c);
   }
@@ -170,6 +179,8 @@ void setup() {
   }
   for (int i = 0; i < 3; i++) outInit(i);
   Serial.begin(115200);
+  NativeUSB.setTxTimeoutMs(0);           // never block the buzzer loop if no host reads replies
+  NativeUSB.begin();
   if (USE_WIFI) {
     WiFi.mode(WIFI_AP);
     WiFi.softAP(AP_SSID, AP_PASS);
@@ -185,8 +196,12 @@ void setup() {
 }
 
 void loop() {
-  // 1) USB serial
+  // 1) USB serial: the UART port (laptop, COM8) and the built-in USB port (QNX Pi)
+  fromNativeUsb = false;
   while (Serial.available() > 0) handleByte((char)Serial.read(), false);
+  fromNativeUsb = true;
+  while (NativeUSB.available() > 0) handleByte((char)NativeUSB.read(), false);
+  fromNativeUsb = false;
 
   // 2) WiFi UDP (a packet may hold several bytes)
   if (USE_WIFI) {

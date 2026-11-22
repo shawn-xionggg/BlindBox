@@ -10,7 +10,7 @@ i=0
 while [ $i -lt 120 ]; do
     if [ -e /dev/sensor/camera1 ] && [ -e /dev/usb/io-usb-otg ]; then
         U=$(usb 2>&1)
-        if echo "$U" | grep -q 0x046d && echo "$U" | grep -q 0x55d3; then break; fi
+        if echo "$U" | grep -q 0x046d && echo "$U" | grep -q 0x303a; then break; fi
     fi
     sleep 1; i=$((i + 1))
 done

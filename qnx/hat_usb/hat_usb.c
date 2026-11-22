@@ -2,9 +2,9 @@
  * hat_usb: talks to the ESP32-S3 buzzer hat over USB on QNX, with no serial driver.
  *
  * The QNX Pi image has no USB-serial (CDC-ACM) driver, so this program is the driver:
- * it uses QNX's libusbdi to find the hat's USB-serial chip (WCH CH343, 1a86:55d3, the
- * ESP32 DevKitC "UART" port), sets 115200 8N1 with DTR/RTS low (so the ESP32 isn't reset),
- * and writes the same one-byte protocol the laptop uses (esp32_cue.py):
+ * it uses QNX's libusbdi to find the ESP32-S3's built-in USB serial port (303a:1001; or the
+ * DevKitC "UART" port's CH343 chip with HAT_PORT=uart), opens its CDC data channel, and writes
+ * the same one-byte protocol the laptop uses (esp32_cue.py):
  *   L R D B I = cues   H = heartbeat   S = stop   F = fault   X = goodbye   P -> K = ping
  *
  * Usage (on the Pi):
@@ -27,8 +27,15 @@
 #include <unistd.h>
 #include <sys/usbdi.h>
 
-#define HAT_VENDOR  0x1a86   /* WCH */
-#define HAT_PRODUCT 0x55d3   /* CH343 "USB Single Serial" */
+/*
+ * Which USB port of the ESP32-S3 DevKitC to use:
+ *  - default: the ESP32's BUILT-IN USB port (Espressif 303a:1001, "USB JTAG/serial debug unit").
+ *    It's a virtual serial port, so no baud rate is involved (the firmware reads it as NativeUSB).
+ *  - HAT_PORT=uart: the "UART" port's WCH CH343 chip (1a86:55d3). It needs the baud rate set to
+ *    115200, and on QNX 8 / Pi 5 that USB request crashes io-usb-otg, so we rely on the chip's
+ *    power-on default -- which stopped matching after a reflash (bytes delivered, hat silent).
+ */
+static unsigned HAT_VENDOR = 0x303a, HAT_PRODUCT = 0x1001;
 
 #define CDC_SET_LINE_CODING        0x20
 #define CDC_SET_CONTROL_LINE_STATE 0x22
@@ -77,6 +84,9 @@ static void insertion(struct usbd_connection *conn, usbd_device_instance_t *inst
         if (getenv("HAT_DEBUG"))
             fprintf(stderr, "instance iface %u: class 0x%02x, %d endpoints\n", (unsigned)inst->iface,
                     ifd->interface.bInterfaceClass, ifd->interface.bNumEndpoints);
+        // only the CDC data interface (class 0x0A); the built-in port also has a JTAG debug
+        // interface (class 0xFF) with bulk endpoints that must never get cue bytes
+        if (ifd->interface.bInterfaceClass != 0x0A) continue;
         for (j = 0; (ep = usbd_parse_descriptors(dv, inode, USB_DESC_ENDPOINT, j, &enode)) != NULL; j++) {
             int prc = EOK;
             if (USB_ENDPOINT_TYPE(ep->endpoint.bmAttributes) != USB_ATTRIB_BULK) continue;
@@ -184,8 +194,11 @@ static int wait_for(char want, double timeout_ms) {
 }
 
 static int open_hat(int argc, char **argv) {
-    static usbd_device_ident_t ident = { HAT_VENDOR, HAT_PRODUCT,
-        USBD_CONNECT_WILDCARD, USBD_CONNECT_WILDCARD, USBD_CONNECT_WILDCARD };
+    static usbd_device_ident_t ident = { 0, 0, USBD_CONNECT_WILDCARD, USBD_CONNECT_WILDCARD, USBD_CONNECT_WILDCARD };
+    const char *port = getenv("HAT_PORT");
+    if (port && !strcmp(port, "uart")) { HAT_VENDOR = 0x1a86; HAT_PRODUCT = 0x55d3; }
+    ident.vendor = HAT_VENDOR;
+    ident.device = HAT_PRODUCT;
     static usbd_funcs_t funcs = { _USBDI_NFUNCS, insertion, removal, NULL };
     usbd_connect_parm_t parm;
     struct usbd_connection *conn;
@@ -209,7 +222,8 @@ static int open_hat(int argc, char **argv) {
     for (end = now_ms() + 3000; !ready && now_ms() < end;) sleep_ms(10);
     if (ready != 1) {
         fprintf(stderr, "hat_usb: hat (USB %04x:%04x) %s\n", HAT_VENDOR, HAT_PRODUCT,
-                ready ? strerror(attach_err) : "not found - is the ESP32's UART port plugged in?");
+                ready ? strerror(attach_err) : (HAT_VENDOR == 0x303a ? "not found - is the ESP32's built-in USB port plugged in?"
+                                                                     : "not found - is the ESP32's UART port plugged in?"));
         return -1;
     }
     sem_init(&io_done, 0, 0);

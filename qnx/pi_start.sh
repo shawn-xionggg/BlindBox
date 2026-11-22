@@ -10,7 +10,7 @@ chmod +x build_aarch64/* 2>/dev/null
 USBLIST=$(usb 2>&1)
 ok=1
 echo "$USBLIST" | grep -q "0x046d" || { echo "!! camera (Logitech C270) not found on USB - plug it in"; ok=0; }
-echo "$USBLIST" | grep -q "0x55d3" || { echo "!! buzzer hat (ESP32 UART port, CH343) not found on USB - plug it in"; ok=0; }
+echo "$USBLIST" | grep -q "0x303a" || { echo "!! buzzer hat (ESP32 built-in USB port, 303a:1001) not found on USB - plug it in"; ok=0; }
 if [ ! -e /dev/usb/io-usb-otg ]; then echo "!! USB stack is down: sudo sh qnx/pi_usb_restart.sh"; ok=0; fi
 [ $ok = 1 ] || exit 1
 
