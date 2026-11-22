@@ -1,0 +1,1603 @@
+{
+  "labelers": {
+    "reviewed": [
+      {
+        "preparation": null,
+        "departure": 1547,
+        "family": "JAB",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 1865,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 2316,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 2617,
+        "family": "JAB",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 3009,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 3596,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 3673,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 3752,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 3835,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 4019,
+        "family": "JAB",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 4503,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 4686,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 5549,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 5698,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 5794,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 5942,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 6169,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 6475,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 6734,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 6966,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 7397,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 7665,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 7857,
+        "family": "JAB",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 8056,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 8255,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 8888,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 8967,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 9078,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 9254,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 9318,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 10317,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 10716,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 11079,
+        "family": "JAB",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 11191,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 11259,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 11599,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 11735,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 11837,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 11918,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 12034,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 12191,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 12436,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 12669,
+        "family": "JAB",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 12772,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 12985,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 13094,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 13227,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 13333,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 13926,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 14029,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 14138,
+        "family": "JAB",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 14189,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 14283,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 14400,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 14774,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 14801,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 14882,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 15159,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 15260,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 15350,
+        "family": "JAB",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 15546,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 16146,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 16216,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 16409,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 16924,
+        "family": "JAB",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 17695,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 18336,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 18782,
+        "family": "JAB",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 18887,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 19057,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 19057,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 19461,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 19542,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 19609,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 19697,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 19972,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 20148,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 20365,
+        "family": "JAB",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 21152,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 21925,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 22096,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      }
+    ],
+    "reviewed_messy": [
+      {
+        "preparation": null,
+        "departure": 1146,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 3867,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 4117,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 4512,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 4698,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 5135,
+        "family": "JAB",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 5706,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 6187,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 6724,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 6975,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 7402,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 8267,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 8701,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 8975,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 9093,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 10470,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 11201,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 11547,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 11560,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 11928,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 12203,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 12240,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 12500,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 12790,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 12993,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 13102,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 13937,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 14043,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 14292,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 14413,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 15270,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 16155,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 16759,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 17328,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 17523,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 17710,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 18316,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 18896,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 19471,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 20158,
+        "family": "CROSS",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 20734,
+        "family": "HOOK_R",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 20930,
+        "family": "HOOK_L",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 22033,
+        "family": "JAB",
+        "rule": "leaves_guard"
+      },
+      {
+        "preparation": null,
+        "departure": 22104,
+        "family": "UPPERCUT",
+        "rule": "leaves_guard"
+      }
+    ]
+  },
+  "ranges": [
+    {
+      "preparation": null,
+      "departure": [
+        1146,
+        1547
+      ],
+      "families": [
+        "HOOK_L",
+        "JAB"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        1865,
+        3867
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        2316,
+        4117
+      ],
+      "families": [
+        "CROSS",
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        2617,
+        4512
+      ],
+      "families": [
+        "JAB",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        3009,
+        4698
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        3596,
+        5135
+      ],
+      "families": [
+        "CROSS",
+        "JAB"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        3673,
+        5706
+      ],
+      "families": [
+        "CROSS",
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        3752,
+        6187
+      ],
+      "families": [
+        "CROSS",
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        3835,
+        6724
+      ],
+      "families": [
+        "HOOK_L"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        4019,
+        6975
+      ],
+      "families": [
+        "CROSS",
+        "JAB"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        4503,
+        7402
+      ],
+      "families": [
+        "CROSS",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        4686,
+        8267
+      ],
+      "families": [
+        "HOOK_L",
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        5549,
+        8701
+      ],
+      "families": [
+        "CROSS",
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        5698,
+        8975
+      ],
+      "families": [
+        "CROSS",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        5794,
+        9093
+      ],
+      "families": [
+        "HOOK_L",
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        5942,
+        10470
+      ],
+      "families": [
+        "HOOK_L",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        6169,
+        11201
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        6475,
+        11547
+      ],
+      "families": [
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        6734,
+        11560
+      ],
+      "families": [
+        "HOOK_L",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        6966,
+        11928
+      ],
+      "families": [
+        "CROSS",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        7397,
+        12203
+      ],
+      "families": [
+        "CROSS",
+        "HOOK_L"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        7665,
+        12240
+      ],
+      "families": [
+        "HOOK_L",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        7857,
+        12500
+      ],
+      "families": [
+        "CROSS",
+        "JAB"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        8056,
+        12790
+      ],
+      "families": [
+        "CROSS",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        8255,
+        12993
+      ],
+      "families": [
+        "HOOK_L",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        8888,
+        13102
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        8967,
+        13937
+      ],
+      "families": [
+        "HOOK_L",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        9078,
+        14043
+      ],
+      "families": [
+        "HOOK_L"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        9254,
+        14292
+      ],
+      "families": [
+        "CROSS",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        9318,
+        14413
+      ],
+      "families": [
+        "CROSS",
+        "HOOK_L"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        10317,
+        15270
+      ],
+      "families": [
+        "HOOK_L",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        10716,
+        16155
+      ],
+      "families": [
+        "CROSS",
+        "HOOK_L"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        11079,
+        16759
+      ],
+      "families": [
+        "CROSS",
+        "JAB"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        11191,
+        17328
+      ],
+      "families": [
+        "HOOK_R",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        11259,
+        17523
+      ],
+      "families": [
+        "CROSS",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        11599,
+        17710
+      ],
+      "families": [
+        "HOOK_R",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        11735,
+        18316
+      ],
+      "families": [
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        11837,
+        18896
+      ],
+      "families": [
+        "HOOK_R",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        11918,
+        19471
+      ],
+      "families": [
+        "HOOK_L",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        12034,
+        20158
+      ],
+      "families": [
+        "CROSS",
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        12191,
+        20734
+      ],
+      "families": [
+        "HOOK_L",
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        12436,
+        20930
+      ],
+      "families": [
+        "HOOK_L"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        12669,
+        22033
+      ],
+      "families": [
+        "JAB"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        12772,
+        22104
+      ],
+      "families": [
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        12985,
+        12985
+      ],
+      "families": [
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        13094,
+        13094
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        13227,
+        13227
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        13333,
+        13333
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        13926,
+        13926
+      ],
+      "families": [
+        "HOOK_L"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        14029,
+        14029
+      ],
+      "families": [
+        "HOOK_L"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        14138,
+        14138
+      ],
+      "families": [
+        "JAB"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        14189,
+        14189
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        14283,
+        14283
+      ],
+      "families": [
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        14400,
+        14400
+      ],
+      "families": [
+        "HOOK_L"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        14774,
+        14774
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        14801,
+        14801
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        14882,
+        14882
+      ],
+      "families": [
+        "HOOK_L"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        15159,
+        15159
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        15260,
+        15260
+      ],
+      "families": [
+        "HOOK_L"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        15350,
+        15350
+      ],
+      "families": [
+        "JAB"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        15546,
+        15546
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        16146,
+        16146
+      ],
+      "families": [
+        "HOOK_L"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        16216,
+        16216
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        16409,
+        16409
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        16924,
+        16924
+      ],
+      "families": [
+        "JAB"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        17695,
+        17695
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        18336,
+        18336
+      ],
+      "families": [
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        18782,
+        18782
+      ],
+      "families": [
+        "JAB"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        18887,
+        18887
+      ],
+      "families": [
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        19057,
+        19057
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        19057,
+        19057
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        19461,
+        19461
+      ],
+      "families": [
+        "HOOK_L"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        19542,
+        19542
+      ],
+      "families": [
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        19609,
+        19609
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        19697,
+        19697
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        19972,
+        19972
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        20148,
+        20148
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        20365,
+        20365
+      ],
+      "families": [
+        "JAB"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        21152,
+        21152
+      ],
+      "families": [
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        21925,
+        21925
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        22096,
+        22096
+      ],
+      "families": [
+        "UPPERCUT"
+      ]
+    }
+  ]
+}

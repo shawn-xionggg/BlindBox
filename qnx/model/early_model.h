@@ -4,7 +4,10 @@
 
 #define EARLY_N_FEATURES 24
 #define EARLY_FLOW_SCALE 0.25
-#define EARLY_THRESHOLD_BUDGET_2 0.948674894  /* false alarms/min budget */
+#define EARLY_THRESHOLD_BUDGET_2 0.92873503  /* false alarms/min budget */
+#define EARLY_THRESHOLD_BUDGET_4 0.916354818  /* false alarms/min budget */
+
+#define EARLY_THRESHOLD_DEMO 0.828  /* live demo: still guard, one punch at a time. Laptop equivalent 0.82, tested live. Raise if too many false beeps, lower if misses */
 
 /* feature order (x[i]); NaN = unknown/missing */
 static const char *const EARLY_FEATURE_NAMES[EARLY_N_FEATURES] = {

@@ -1,0 +1,61 @@
+﻿building session_20261121_024335_748065_onnx.npz
+building session_20261121_030328_194149_onnx.npz
+building session_20261121_095106_097514_onnx.npz
+building session_20261121_115113_071950_onnx.npz
+building session_20261121_223419_058659_onnx.npz
+  session_20261121_223419_058659_onnx.npz: 2000/16388 frames (10s)
+  session_20261121_223419_058659_onnx.npz: 4000/16388 frames (20s)
+  session_20261121_223419_058659_onnx.npz: 6000/16388 frames (30s)
+  session_20261121_223419_058659_onnx.npz: 8000/16388 frames (40s)
+  session_20261121_223419_058659_onnx.npz: 10000/16388 frames (50s)
+  session_20261121_223419_058659_onnx.npz: 12000/16388 frames (60s)
+  session_20261121_223419_058659_onnx.npz: 14000/16388 frames (71s)
+  session_20261121_223419_058659_onnx.npz: 16000/16388 frames (81s)
+session_20261121_223419_058659_onnx.npz: 16388 frames in 83s -> features\session_20261121_223419_058659_onnx.flow_s0.25.npz
+building session_20261121_235935_259319_onnx.npz
+  session_20261121_235935_259319_onnx.npz: 2000/10727 frames (10s)
+  session_20261121_235935_259319_onnx.npz: 4000/10727 frames (20s)
+  session_20261121_235935_259319_onnx.npz: 6000/10727 frames (30s)
+  session_20261121_235935_259319_onnx.npz: 8000/10727 frames (40s)
+  session_20261121_235935_259319_onnx.npz: 10000/10727 frames (51s)
+session_20261121_235935_259319_onnx.npz: 10727 frames in 54s -> features\session_20261121_235935_259319_onnx.flow_s0.25.npz
+building session_20261122_001919_731330_onnx.npz
+  session_20261122_001919_731330_onnx.npz: 2000/8956 frames (11s)
+  session_20261122_001919_731330_onnx.npz: 4000/8956 frames (20s)
+  session_20261122_001919_731330_onnx.npz: 6000/8956 frames (31s)
+  session_20261122_001919_731330_onnx.npz: 8000/8956 frames (42s)
+session_20261122_001919_731330_onnx.npz: 8956 frames in 47s -> features\session_20261122_001919_731330_onnx.flow_s0.25.npz
+camera mounts: {'head': 3, 'desk': 4} sessions
+
+                             | caught <=50ms <=100 <=150 <=200 <=300 | median  | fa/min | feints
+--- threshold picked on training blocks for <= 2 false alarms/min ---
+learned                      |   15%   25%   29%   40%   49% |    96ms |   4.13 | 5/17
+                               hooks only: caught <=200ms 30/55, <=300ms 34/55
+launch (hand-made)           |    1%    1%    1%    6%    9% |   192ms |   2.07 | 0/17
+                               hooks only: caught <=200ms 8/55, <=300ms 10/55
+    learned on session_20261121_223419_058659_onnx.npz: caught <=200ms 29/74, 3.35 fa/min
+    learned on session_20261121_235935_259319_onnx.npz: caught <=200ms 25/65, 7.21 fa/min
+    learned on session_20261122_001919_731330_onnx.npz: caught <=200ms 16/38, 2.88 fa/min
+--- threshold picked on training blocks for <= 4 false alarms/min ---
+learned                      |   23%   36%   41%   53%   61% |    96ms |   9.02 | 7/17
+                               hooks only: caught <=200ms 39/55, <=300ms 42/55
+launch (hand-made)           |    4%    5%    8%   15%   19% |   160ms |   4.51 | 0/17
+                               hooks only: caught <=200ms 15/55, <=300ms 18/55
+    learned on session_20261121_223419_058659_onnx.npz: caught <=200ms 39/74, 7.07 fa/min
+    learned on session_20261121_235935_259319_onnx.npz: caught <=200ms 35/65, 10.42 fa/min
+    learned on session_20261122_001919_731330_onnx.npz: caught <=200ms 20/38, 11.52 fa/min
+
+saved models/candidates/reactive_lg_headonly_onnx.joblib; thresholds by budget {2.0: 0.929, 4.0: 0.916}
+top features (permutation importance, in-sample, indicative only):
+  mag_rel_l0     0.3126
+  disp_rest_l2   0.2654
+  rely           0.2510
+  relx           0.2395
+  disp_rest_l0   0.0917
+  other_speed    0.0911
+  div_rel_l1     0.0667
+  div_rel_l0     0.0626
+  torso_mag      0.0562
+  energy_l1      0.0520
+  torso_div      0.0471
+  out_rel_l1     0.0426

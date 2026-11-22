@@ -1,0 +1,488 @@
+{
+  "labelers": {
+    "reviewed": [
+      {
+        "preparation": null,
+        "departure": 457,
+        "family": "JAB",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 638,
+        "family": "CROSS",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 893,
+        "family": "CROSS",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 958,
+        "family": "JAB",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 1506,
+        "family": "JAB",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 1575,
+        "family": "JAB",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 1860,
+        "family": "CROSS",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 1933,
+        "family": "CROSS",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 2409,
+        "family": "CROSS",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 2442,
+        "family": "CROSS",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 2606,
+        "family": "CROSS",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 2793,
+        "family": "CROSS",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 2880,
+        "family": "CROSS",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 3168,
+        "family": "CROSS",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 3259,
+        "family": "CROSS",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 3607,
+        "family": "JAB",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 4285,
+        "family": "HOOK_L",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 4687,
+        "family": "HOOK_R",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 4760,
+        "family": "HOOK_R",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 5883,
+        "family": "JAB",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 5977,
+        "family": "FEINT",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 5978,
+        "family": "CROSS",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 6274,
+        "family": "HOOK_R",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 6334,
+        "family": "HOOK_L",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 7146,
+        "family": "HOOK_R",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 7146,
+        "family": "HOOK_R",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 7614,
+        "family": "UPPERCUT",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 7714,
+        "family": "HOOK_L",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 7758,
+        "family": "UPPERCUT",
+        "rule": "toward_target"
+      },
+      {
+        "preparation": null,
+        "departure": 7828,
+        "family": "HOOK_R",
+        "rule": "toward_target"
+      }
+    ]
+  },
+  "ranges": [
+    {
+      "preparation": null,
+      "departure": [
+        457,
+        457
+      ],
+      "families": [
+        "JAB"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        638,
+        638
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        893,
+        893
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        958,
+        958
+      ],
+      "families": [
+        "JAB"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        1506,
+        1506
+      ],
+      "families": [
+        "JAB"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        1575,
+        1575
+      ],
+      "families": [
+        "JAB"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        1860,
+        1860
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        1933,
+        1933
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        2409,
+        2409
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        2442,
+        2442
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        2606,
+        2606
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        2793,
+        2793
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        2880,
+        2880
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        3168,
+        3168
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        3259,
+        3259
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        3607,
+        3607
+      ],
+      "families": [
+        "JAB"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        4285,
+        4285
+      ],
+      "families": [
+        "HOOK_L"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        4687,
+        4687
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        4760,
+        4760
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        5883,
+        5883
+      ],
+      "families": [
+        "JAB"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        5977,
+        5977
+      ],
+      "families": [
+        "FEINT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        5978,
+        5978
+      ],
+      "families": [
+        "CROSS"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        6274,
+        6274
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        6334,
+        6334
+      ],
+      "families": [
+        "HOOK_L"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        7146,
+        7146
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        7146,
+        7146
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        7614,
+        7614
+      ],
+      "families": [
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        7714,
+        7714
+      ],
+      "families": [
+        "HOOK_L"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        7758,
+        7758
+      ],
+      "families": [
+        "UPPERCUT"
+      ]
+    },
+    {
+      "preparation": null,
+      "departure": [
+        7828,
+        7828
+      ],
+      "families": [
+        "HOOK_R"
+      ]
+    }
+  ]
+}

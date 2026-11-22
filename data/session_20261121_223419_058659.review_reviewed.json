@@ -1,0 +1,678 @@
+{
+ "0": {
+  "departure": 521,
+  "initial": 492,
+  "auto": 492,
+  "family": "CROSS",
+  "decision": "feint",
+  "rule": "toward_target"
+ },
+ "1": {
+  "departure": 864,
+  "initial": 851,
+  "auto": 851,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "2": {
+  "departure": 972,
+  "initial": 946,
+  "auto": 946,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "3": {
+  "departure": 974,
+  "initial": 961,
+  "auto": 961,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "4": {
+  "departure": 1105,
+  "initial": 1092,
+  "auto": 1092,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "5": {
+  "departure": 1275,
+  "initial": 1267,
+  "auto": 1267,
+  "family": "HOOK_L",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "6": {
+  "departure": 1362,
+  "initial": 1356,
+  "auto": 1356,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "7": {
+  "departure": 1845,
+  "initial": 1834,
+  "auto": 1834,
+  "family": "HOOK_L",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "8": {
+  "departure": 1934,
+  "initial": 1934,
+  "auto": 1934,
+  "family": "HOOK_L",
+  "decision": "no",
+  "rule": "toward_target"
+ },
+ "9": {
+  "departure": 2115,
+  "initial": 2105,
+  "auto": 2105,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "10": {
+  "departure": 2367,
+  "initial": 2351,
+  "auto": 2351,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "11": {
+  "departure": 2406,
+  "initial": 2413,
+  "auto": 2413,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "12": {
+  "departure": 2551,
+  "initial": 2530,
+  "auto": 2530,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "13": {
+  "departure": 2627,
+  "initial": 2618,
+  "auto": 2618,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "14": {
+  "departure": 3056,
+  "initial": 3050,
+  "auto": 3050,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "15": {
+  "departure": 3148,
+  "initial": 3136,
+  "auto": 3136,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "16": {
+  "departure": 3315,
+  "initial": 3306,
+  "auto": 3306,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "17": {
+  "departure": 3460,
+  "initial": 3460,
+  "auto": 3460,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "18": {
+  "departure": 3512,
+  "initial": 3500,
+  "auto": 3500,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "19": {
+  "departure": 3878,
+  "initial": 3874,
+  "auto": 3874,
+  "family": "HOOK_L",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "20": {
+  "departure": 4001,
+  "initial": 3991,
+  "auto": 3991,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "21": {
+  "departure": 4081,
+  "initial": 4081,
+  "auto": 4081,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "22": {
+  "departure": 4656,
+  "initial": 4651,
+  "auto": 4651,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "23": {
+  "departure": 5122,
+  "initial": 5114,
+  "auto": 5114,
+  "family": "HOOK_L",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "24": {
+  "departure": 5404,
+  "initial": 5394,
+  "auto": 5394,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "25": {
+  "departure": 5623,
+  "initial": 5612,
+  "auto": 5612,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "26": {
+  "departure": 6359,
+  "initial": 6349,
+  "auto": 6349,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "27": {
+  "departure": 6463,
+  "initial": 6452,
+  "auto": 6452,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "28": {
+  "departure": 6463,
+  "initial": 6461,
+  "auto": 6461,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "29": {
+  "departure": 6576,
+  "initial": 6578,
+  "auto": 6578,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "30": {
+  "departure": 6731,
+  "initial": 6723,
+  "auto": 6723,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "31": {
+  "departure": 6907,
+  "initial": 6908,
+  "auto": 6908,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "32": {
+  "departure": 6928,
+  "initial": 6927,
+  "auto": 6927,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "33": {
+  "departure": 7002,
+  "initial": 6997,
+  "auto": 6997,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "34": {
+  "departure": 7019,
+  "initial": 7019,
+  "auto": 7019,
+  "family": "HOOK_L",
+  "decision": "no",
+  "rule": "toward_target"
+ },
+ "35": {
+  "departure": 7187,
+  "initial": 7179,
+  "auto": 7179,
+  "family": "HOOK_L",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "36": {
+  "departure": 7393,
+  "initial": 7390,
+  "auto": 7390,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "37": {
+  "departure": 7492,
+  "initial": 7468,
+  "auto": 7468,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "38": {
+  "departure": 7493,
+  "initial": 7491,
+  "auto": 7491,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "39": {
+  "departure": 8145,
+  "initial": 8139,
+  "auto": 8139,
+  "family": "HOOK_L",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "40": {
+  "departure": 8486,
+  "initial": 8486,
+  "auto": 8486,
+  "family": "HOOK_R",
+  "decision": "no",
+  "rule": "toward_target"
+ },
+ "41": {
+  "departure": 8784,
+  "initial": 8771,
+  "auto": 8771,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "42": {
+  "departure": 9038,
+  "initial": 9031,
+  "auto": 9031,
+  "family": "HOOK_L",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "43": {
+  "departure": 9516,
+  "initial": 9513,
+  "auto": 9513,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "44": {
+  "departure": 9591,
+  "initial": 9592,
+  "auto": 9592,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "45": {
+  "departure": 9816,
+  "initial": 9806,
+  "auto": 9806,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "46": {
+  "departure": 10383,
+  "initial": 10372,
+  "auto": 10372,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "47": {
+  "departure": 10624,
+  "initial": 10618,
+  "auto": 10618,
+  "family": "HOOK_L",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "48": {
+  "departure": 10849,
+  "initial": 10850,
+  "auto": 10850,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "49": {
+  "departure": 10884,
+  "initial": 10884,
+  "auto": 10884,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "50": {
+  "departure": 11010,
+  "initial": 11009,
+  "auto": 11009,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "51": {
+  "departure": 11128,
+  "initial": 11127,
+  "auto": 11127,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "52": {
+  "departure": 11211,
+  "initial": 11199,
+  "auto": 11199,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "53": {
+  "departure": 11570,
+  "initial": 11556,
+  "auto": 11556,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "54": {
+  "departure": 11570,
+  "initial": 11565,
+  "auto": 11565,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "55": {
+  "departure": 11656,
+  "initial": 11645,
+  "auto": 11645,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "56": {
+  "departure": 12525,
+  "initial": 12515,
+  "auto": 12515,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "57": {
+  "departure": 12721,
+  "initial": 12713,
+  "auto": 12713,
+  "family": "HOOK_L",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "58": {
+  "departure": 12879,
+  "initial": 12857,
+  "auto": 12857,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "59": {
+  "departure": 12878,
+  "initial": 12865,
+  "auto": 12865,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "60": {
+  "departure": 13132,
+  "initial": 13133,
+  "auto": 13133,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "61": {
+  "departure": 13468,
+  "initial": 13467,
+  "auto": 13467,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "62": {
+  "departure": 13497,
+  "initial": 13498,
+  "auto": 13498,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "63": {
+  "departure": 13580,
+  "initial": 13575,
+  "auto": 13575,
+  "family": "HOOK_L",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "64": {
+  "departure": 13728,
+  "initial": 13719,
+  "auto": 13719,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "65": {
+  "departure": 13762,
+  "initial": 13763,
+  "auto": 13763,
+  "family": "HOOK_L",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "66": {
+  "departure": 13983,
+  "initial": 13982,
+  "auto": 13982,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "67": {
+  "departure": 14016,
+  "initial": 14016,
+  "auto": 14016,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "68": {
+  "departure": 14226,
+  "initial": 14225,
+  "auto": 14225,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "69": {
+  "departure": 14301,
+  "initial": 14288,
+  "auto": 14288,
+  "family": "HOOK_L",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "70": {
+  "departure": 14369,
+  "initial": 14368,
+  "auto": 14368,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "71": {
+  "departure": 14394,
+  "initial": 14396,
+  "auto": 14396,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "72": {
+  "departure": 14538,
+  "initial": 14526,
+  "auto": 14526,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "73": {
+  "departure": 14538,
+  "initial": 14539,
+  "auto": 14539,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "74": {
+  "departure": 15121,
+  "initial": 15121,
+  "auto": 15121,
+  "family": "UPPERCUT",
+  "decision": "no",
+  "rule": "toward_target"
+ },
+ "75": {
+  "departure": 15140,
+  "initial": 15130,
+  "auto": 15130,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "76": {
+  "departure": 15903,
+  "initial": 15903,
+  "auto": 15903,
+  "family": "CROSS",
+  "decision": "no",
+  "rule": "toward_target"
+ },
+ "77": {
+  "departure": 16150,
+  "initial": 16137,
+  "auto": 16137,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "78": {
+  "departure": 16220,
+  "initial": 16216,
+  "auto": 16216,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "79": {
+  "departure": 16305,
+  "initial": 16299,
+  "auto": 16299,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target",
+  "shifted": -2
+ },
+ "80": {
+  "departure": 16365,
+  "initial": 16365,
+  "auto": 16365,
+  "family": "FREE",
+  "decision": "no",
+  "rule": "toward_target"
+ }
+}

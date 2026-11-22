@@ -1,0 +1,354 @@
+{
+ "0": {
+  "departure": 618,
+  "initial": 618,
+  "auto": 618,
+  "family": "HOOK_L",
+  "decision": "no",
+  "rule": "toward_target"
+ },
+ "1": {
+  "departure": 650,
+  "initial": 648,
+  "auto": 648,
+  "family": "HOOK_L",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "2": {
+  "departure": 684,
+  "initial": 678,
+  "auto": 678,
+  "family": "HOOK_L",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "3": {
+  "departure": 1260,
+  "initial": 1260,
+  "auto": 1260,
+  "family": "CROSS",
+  "decision": "no",
+  "rule": "toward_target"
+ },
+ "4": {
+  "departure": 1314,
+  "initial": 1314,
+  "auto": 1314,
+  "family": "CROSS",
+  "decision": "no",
+  "rule": "toward_target"
+ },
+ "5": {
+  "departure": 1324,
+  "initial": 1324,
+  "auto": 1324,
+  "family": "FREE",
+  "decision": "no",
+  "rule": "toward_target"
+ },
+ "6": {
+  "departure": 1592,
+  "initial": 1598,
+  "auto": 1598,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "7": {
+  "departure": 2263,
+  "initial": 2257,
+  "auto": 2257,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "8": {
+  "departure": 2614,
+  "initial": 2615,
+  "auto": 2615,
+  "family": "HOOK_L",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "9": {
+  "departure": 3414,
+  "initial": 3410,
+  "auto": 3410,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "10": {
+  "departure": 3454,
+  "initial": 3449,
+  "auto": 3449,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "11": {
+  "departure": 3599,
+  "initial": 3599,
+  "auto": 3599,
+  "family": "HOOK_R",
+  "decision": "no",
+  "rule": "toward_target"
+ },
+ "12": {
+  "departure": 3849,
+  "initial": 3845,
+  "auto": 3845,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "13": {
+  "departure": 3868,
+  "initial": 3867,
+  "auto": 3867,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "14": {
+  "departure": 4162,
+  "initial": 4151,
+  "auto": 4151,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "15": {
+  "departure": 4201,
+  "initial": 4188,
+  "auto": 4188,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "16": {
+  "departure": 4507,
+  "initial": 4502,
+  "auto": 4502,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "17": {
+  "departure": 4550,
+  "initial": 4551,
+  "auto": 4551,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "18": {
+  "departure": 4656,
+  "initial": 4654,
+  "auto": 4654,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "19": {
+  "departure": 4794,
+  "initial": 4795,
+  "auto": 4795,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "20": {
+  "departure": 4924,
+  "initial": 4925,
+  "auto": 4925,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "21": {
+  "departure": 5098,
+  "initial": 5097,
+  "auto": 5097,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "22": {
+  "departure": 5201,
+  "initial": 5198,
+  "auto": 5198,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "23": {
+  "departure": 5224,
+  "initial": 5225,
+  "auto": 5225,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "24": {
+  "departure": 5383,
+  "initial": 5385,
+  "auto": 5385,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "25": {
+  "departure": 5409,
+  "initial": 5412,
+  "auto": 5412,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "26": {
+  "departure": 5837,
+  "initial": 5830,
+  "auto": 5830,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "27": {
+  "departure": 5961,
+  "initial": 5938,
+  "auto": 5938,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "28": {
+  "departure": 5999,
+  "initial": 5980,
+  "auto": 5980,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "29": {
+  "departure": 5998,
+  "initial": 5995,
+  "auto": 5995,
+  "family": "CROSS",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "30": {
+  "departure": 6240,
+  "initial": 6232,
+  "auto": 6232,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "31": {
+  "departure": 6277,
+  "initial": 6291,
+  "auto": 6291,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "32": {
+  "departure": 7050,
+  "initial": 7048,
+  "auto": 7048,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "33": {
+  "departure": 7100,
+  "initial": 7099,
+  "auto": 7099,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "34": {
+  "departure": 7383,
+  "initial": 7380,
+  "auto": 7380,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "35": {
+  "departure": 7692,
+  "initial": 7693,
+  "auto": 7693,
+  "family": "UPPERCUT",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "36": {
+  "departure": 7960,
+  "initial": 7954,
+  "auto": 7954,
+  "family": "JAB",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "37": {
+  "departure": 7998,
+  "initial": 7994,
+  "auto": 7994,
+  "family": "HOOK_L",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "38": {
+  "departure": 8261,
+  "initial": 8259,
+  "auto": 8259,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "39": {
+  "departure": 8298,
+  "initial": 8289,
+  "auto": 8289,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "40": {
+  "departure": 8333,
+  "initial": 8329,
+  "auto": 8329,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "41": {
+  "departure": 8366,
+  "initial": 8361,
+  "auto": 8361,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "42": {
+  "departure": 8396,
+  "initial": 8388,
+  "auto": 8388,
+  "family": "HOOK_R",
+  "decision": "yes",
+  "rule": "toward_target"
+ },
+ "43": {
+  "departure": 8915,
+  "initial": 8915,
+  "auto": 8915,
+  "family": "FREE",
+  "decision": "no",
+  "rule": "toward_target"
+ }
+}
