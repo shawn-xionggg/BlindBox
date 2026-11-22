@@ -21,7 +21,8 @@ while [ $try -le 5 ]; do
     echo "blindbox boot: start attempt $try"
     if sh "$HERE/pi_start.sh"; then
         sleep 5
-        if pidin -P vision >/dev/null 2>&1 && pidin -P vision | grep -q vision; then echo "blindbox boot: detection running"; exit 0; fi
+        # (QNX names the process by its path, so check the log, not pidin -P vision)
+        if grep -q "first frame" /tmp/vision.log 2>/dev/null; then echo "blindbox boot: detection running"; exit 0; fi
     fi
     try=$((try + 1)); sleep 10
 done
