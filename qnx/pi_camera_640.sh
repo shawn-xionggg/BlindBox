@@ -2,10 +2,11 @@
 # Run ON THE PI (QNX) after every boot:   sh qnx/pi_camera_640.sh
 # Restarts QNX's camera service (sensor) so the USB C270 (camera unit 5) runs at 640x480,
 # the resolution all training data was recorded at. Default config gives ~20 fps; this gives ~26.
-# The system config is not edited: a copy with one extra line is written to ~/sensor_c270.conf.
+# The system config is not edited: a copy with one extra line is written to /tmp/sensor_c270.conf
+# (/tmp, not $HOME: at boot this runs as root from pi_boot.sh, where HOME isn't the user's).
 # Undo: reboot.
 SRC=/etc/config/sensor/sensor_rpi5.conf
-DST="$HOME/sensor_c270.conf"
+DST=/tmp/sensor_c270.conf
 
 awk '{print} /^    name = front-camera$/{print "    default_video_resolution = 640, 480"}' "$SRC" > "$DST" || exit 1
 grep -q "default_video_resolution = 640, 480" "$DST" || { echo "could not find the USB camera block in $SRC"; exit 1; }
