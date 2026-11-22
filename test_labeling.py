@@ -54,14 +54,25 @@ def write_session(folder, cands, n=400, labels=None, commands=('JAB',), command_
 
 
 def run_review(npz, keys, extra=()):
+    """keys: a string of key presses; a tuple ('click', x, y) in place of a key clicks the window there."""
     cap = Mock()
     cap.get.return_value = 400
     cap.read.return_value = (True, np.zeros((48, 64, 3), np.uint8))
+    mouse = []
+    presses = iter([k for k in keys] + ['q'] * 3)
+
+    def wait(ms):
+        k = next(presses)
+        if isinstance(k, tuple):
+            mouse[0](rl.cv2.EVENT_LBUTTONDOWN, k[1], k[2], 0, None)
+            return 255
+        return ord(k)
     with patch.object(sys, 'argv', ['review_labels.py', str(npz), *extra]), \
          patch.object(rl.cv2, 'VideoCapture', return_value=cap), \
          patch.object(rl.cv2, 'namedWindow'), patch.object(rl.cv2, 'imshow'), \
+         patch.object(rl.cv2, 'setMouseCallback', side_effect=lambda win, fn: mouse.append(fn)), \
          patch.object(rl.cv2, 'destroyAllWindows'), \
-         patch.object(rl.cv2, 'waitKey', side_effect=[ord(k) for k in keys] + [ord('q')] * 3), \
+         patch.object(rl.cv2, 'waitKey', side_effect=wait), \
          contextlib.redirect_stdout(io.StringIO()) as out:
         rl.main()
     return out.getvalue()
@@ -84,6 +95,15 @@ class ReviewToolTests(unittest.TestCase):
             self.assertEqual([states[i]['decision'] for i in '012'], ['yes', 'feint', 'no'])
             self.assertEqual((states['0']['auto'], states['0']['initial']), (100, 100))
             self.assertIn('feint 1', log)
+
+    def test_step_frames_and_click_to_set_start(self):
+        with workspace_temp() as tmp:
+            npz = write_session(tmp, [cand(100), cand(200)])
+            # loop shows offset -6, -5, ...: one tick plays (-5), 'd' 'd' step to -3, 's' sets it as the start
+            # second candidate: click the first thumbnail (offset -2), then accept
+            run_review(npz, ['d', 'd', 's', 'y', ('click', 5, 400), 'y'])
+            marks = labels_of(npz)['reviewed']
+            self.assertEqual([m['departure'] for m in marks], [97, 198])
 
     def test_blind_second_reviewer_is_kept_apart_and_jittered(self):
         main_marks = [dict(preparation=None, departure=100, family='JAB')]

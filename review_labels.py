@@ -10,6 +10,9 @@ the punch starts (green border). You confirm it and fix the start frame:
   y  punch, starting at the green frame        n  not a punch
   f  feint (a fake punch start: saved as type FEINT, never used as a punch)
   ,  .  nudge the start one frame earlier / later
+  space  pause the loop     a  d  step the shown frame back / forward (pauses)
+  s (or Enter)  the frame on show becomes the start
+  CLICK  a thumbnail (or the big view) to make that frame the start
   1 JAB  2 CROSS  3 HOOK_L  4 HOOK_R  5 UPPERCUT  6 STEP_IN   (fix the type)
      HOOK_L / HOOK_R = the fist comes from the image-left / image-right side
   b  back one       space  pause loop       q  save and quit
@@ -117,13 +120,14 @@ def render(cand, state, frames, loop_off, pos, total, timestamps, labeler="revie
     ] + [(line, (255, 255, 255), 0.55) for line in RULE_LINES] + [
         ("y punch  f feint  n no  b back  q quit", (180, 255, 180), 0.55),
         (",  .  nudge start -1 / +1 frame", (180, 255, 180), 0.55),
-        ("1 JAB 2 CROSS 3 HOOK_L 4 HOOK_R", (180, 255, 180), 0.55),
-        ("5 UPPERCUT 6 STEP_IN  space pause", (180, 255, 180), 0.55),
+        ("space pause  a / d step 1 frame", (180, 255, 180), 0.55),
+        ("s or CLICK a frame = start here", (180, 255, 180), 0.55),
+        ("1 JAB 2 CROSS 3 HOOK_L 4 HOOK_R 5 UPPER", (180, 255, 180), 0.55),
     ]
     y = 34
     for text, c, s in lines:
         cv2.putText(canvas, text, (500, y), cv2.FONT_HERSHEY_SIMPLEX, s, c, 1 if s < 0.6 else 2, cv2.LINE_AA)
-        y += 24
+        y += 23
     return canvas
 
 
@@ -244,6 +248,18 @@ def main():
     cv2.namedWindow(win)
     loaded_key, frames, loop_i, paused = None, {}, 0, False
     offs = list(OFFSETS)
+    clicked = []   # frame offsets picked with the mouse (big view = the frame on show, strip = that thumbnail)
+
+    def on_mouse(event, x, y, flags, param):
+        if event != cv2.EVENT_LBUTTONDOWN:
+            return
+        if y >= 360:
+            k = x // 160
+            if 0 <= k < len(STRIP):
+                clicked.append(STRIP[k])
+        elif x < 480:
+            clicked.append(offs[loop_i])
+    cv2.setMouseCallback(win, on_mouse)
 
     while True:
         c = cands[pos]
@@ -252,11 +268,19 @@ def main():
                                               family=c["family"], decision=None))
         if loaded_key != (pos, st["departure"]):
             frames = load_frames(cap, st["departure"], n_frames)
-            loaded_key, loop_i = (pos, st["departure"]), 0
+            # paused: stay on the (new) start frame so you can check it; playing: loop from the top
+            same_cand = loaded_key is not None and loaded_key[0] == pos
+            loaded_key, loop_i = (pos, st["departure"]), offs.index(0) if paused and same_cand else 0
         near = nearby_punch(pos, st, states, sibling_frames, timestamps)
         canvas = render(c, st, frames, offs[loop_i], pos, len(cands), timestamps, args.labeler, near)
         cv2.imshow(win, canvas)
         key = cv2.waitKey(args.ms) & 0xFF
+        if clicked:      # mouse: that frame becomes the start
+            st["departure"] = int(np.clip(st["departure"] + clicked.pop(), 0, n_frames - 1))
+            clicked.clear()
+            paused = True
+            save(progress_path, labels_path, args.labeler, cands, states)
+            continue
         if not paused:
             loop_i = (loop_i + 1) % len(offs)
         if key == 255:
@@ -265,6 +289,11 @@ def main():
             break
         if key == ord(" "):
             paused = not paused
+        elif key in (ord("a"), ord("d")):     # step the shown frame (pauses the loop)
+            paused = True
+            loop_i = max(0, min(len(offs) - 1, loop_i + (1 if key == ord("d") else -1)))
+        elif key in (ord("s"), 13):           # the frame on show becomes the start
+            st["departure"] = int(np.clip(st["departure"] + offs[loop_i], 0, n_frames - 1))
         elif key == ord(","):
             st["departure"] = max(0, st["departure"] - 1)
         elif key == ord("."):
@@ -274,6 +303,7 @@ def main():
         elif key in DECISIONS:
             st["decision"] = DECISIONS[key]
             st["rule"] = RULE
+            paused = False                     # the next candidate starts playing
             if pos + 1 < len(cands):
                 pos += 1
             else:
@@ -281,7 +311,7 @@ def main():
                 print("All candidates reviewed.")
                 break
         elif key == ord("b"):
-            pos = max(0, pos - 1)
+            pos, paused = max(0, pos - 1), False
         save(progress_path, labels_path, args.labeler, cands, states)
 
     cap.release()
