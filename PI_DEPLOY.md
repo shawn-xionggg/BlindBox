@@ -2,7 +2,20 @@
 
 The same detector that worked live on the laptop (DEMO_SETTINGS.md), retrained on the keypoints the **Pi's pose model** produces, and exported to plain C.
 
-## What to put on the Pi
+## On the Pi (with qnx/vision_pi from main)
+
+1. `git pull`, rebuild `qnx/vision_pi` (it compiles `qnx/model/early_model.c`, now the new detector).
+2. Set the demo threshold, then start as usual:
+   ```sh
+   echo 0.828 > /data/home/qnxuser/blindbox_threshold
+   sh qnx/pi_start.sh
+   ```
+   Too many false beeps: `echo 0.85 > ...`; too many misses: `echo 0.81 > ...`, then start again.
+3. Old detector back: copy `models/archive/qnx_early_model_before_head.c/.h` over `qnx/model/early_model.c/.h` and rebuild (its old default was 0.923-0.949).
+
+Caution: `vision.cpp` fixes its feature window at 12 frames (written for ~20 fps). The new detector was trained on ~30 fps hat sessions through `early_dataset.py`; if beeps look late or odd on the Pi, check that window against the Pi's real frame rate.
+
+## What it is made of
 
 | File | What it is |
 |---|---|
