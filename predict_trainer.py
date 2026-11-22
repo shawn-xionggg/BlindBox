@@ -33,6 +33,7 @@ Reported for first punches and follow-ups (<= 1 s after another punch) separatel
   python predict_trainer.py --rule depth       # the hand-written pull-back rule alone (depth/dip/either)
 """
 import argparse
+import json
 import warnings
 from pathlib import Path
 
@@ -87,6 +88,7 @@ def build(paths, flow=True, train_prompted=False, horizon=pdx.H, signed=False):
             names = names + [f"signed_{n}{k}" for k in range(2) for n in sm.NAMES]
             groups = groups + ["signed"] * (2 * len(sm.NAMES))
         s["y"] = pdx.targets(s, h=horizon, train_prompted=train_prompted)
+        s["cands"] = json.loads(Path(p).with_suffix(".auto_candidates.json").read_text())["candidates"]
         s["tracked"] = (s["cf"][:, 5] > pdx.KC) & (s["cf"][:, 6] > pdx.KC)
         s["dt"] = np.r_[np.median(np.diff(s["t"])), np.diff(s["t"])]
         s["flying"] = np.zeros(len(s["t"]), bool)
@@ -352,6 +354,70 @@ def split_performer(sessions, idx, gap=1.0):
     return [p for p in first if p[2] > p[1]], [p for p in second if p[2] > p[1]]
 
 
+AUTO_QUALITIES = ("clean", "combo")     # auto_label.py / combo_candidates.py movements taken as punches
+
+
+def start_offset(sessions, idx, near=10):
+    """Median frames from the auto-labeler's departure to the reviewed start, over sessions idx."""
+    diffs = []
+    for i in idx:
+        s = sessions[i]
+        dep = np.array([c["departure"] for c in s["cands"]]) if s["cands"] else np.array([], int)
+        for q in s["punches"]:
+            if len(dep):
+                j = int(np.argmin(np.abs(dep - q["frame"])))
+                if abs(dep[j] - q["frame"]) <= near:
+                    diffs.append(q["frame"] - dep[j])
+    return int(round(np.median(diffs))) if diffs else 0
+
+
+def auto_copy(s, offset, horizon):
+    """The same footage with label-free punches: every auto-labeler movement of AUTO_QUALITIES,
+    its start moved `offset` frames, no feints. What a live system could learn from by itself."""
+    a = dict(s)
+    t, n = s["t"], len(s["t"])
+    starts = sorted({min(n - 1, max(0, int(c["departure"]) + offset)) for c in s["cands"] if c["quality"] in AUTO_QUALITIES})
+    punches = []
+    for d in starts:
+        if punches and t[d] - t[punches[-1]["frame"]] < 0.12:
+            continue
+        c = min(s["cands"], key=lambda c: abs(int(c["departure"]) + offset - d))
+        punches.append(dict(frame=d, time=float(t[d]), peak=min(max(int(c["peak"]), d + 1), n - 1),
+                            first_motion=min(d, int(c["departure"])), kind=int(s["kind"][d]),
+                            follow=bool(punches and t[d] - punches[-1]["time"] <= pdx.FOLLOW)))
+    a.update(punches=punches, feints=[], name=s["name"] + "#auto")
+    a["y"] = pdx.targets(a, h=horizon)
+    a["flying"] = np.zeros(n, bool)
+    for q in punches:
+        a["flying"][q["frame"]:q["peak"] + 1] = True
+    return a
+
+
+def self_calibration_folds(sessions, horizon):
+    """(b-auto): like (b), but this person's first half is learned from label-free punches
+    (auto_copy); the threshold is set on that too. Only the scoring of the second half uses
+    the reviewed labels. Appends the label-free copies to `sessions`."""
+    by = {}
+    for i, s in enumerate(list(sessions)):
+        by.setdefault(s["performer"], []).append(i)
+    with_nat = [p for p, idx in by.items() if sum(natural_count(sessions[i]) for i in idx) >= 10]
+    full = lambda idx: [(i, 0, len(sessions[i]["t"])) for i in idx]
+    folds, offsets = [], {}
+    for p in with_nat:
+        first, second = split_performer(sessions, by[p])
+        others = [i for q, idx in by.items() if q != p for i in idx]
+        # the gap comes from other people's head-camera sessions (labeled under the current start rule)
+        same_cam = [i for i in others if sessions[i]["mount"] == sessions[by[p][0]]["mount"]] or others
+        off = offsets[p] = start_offset(sessions, same_cam)
+        copies = {}
+        for si, lo, hi in first:
+            if si not in copies:
+                sessions.append(auto_copy(sessions[si], off, horizon))
+                copies[si] = len(sessions) - 1
+        folds.append((full(others) + [(copies[si], lo, hi) for si, lo, hi in first], second))
+    return folds, offsets
+
+
 def tests(sessions):
     """(name, explanation, [(train parts, test parts)]) for every test the data allows."""
     by = {}
@@ -397,8 +463,14 @@ def main():
                          "(saves models/candidates/predictor_signed.joblib)")
     ap.add_argument("--rule", choices=("depth", "dip", "either"),
                     help="score signed_motion.py's hand-written pull-back rule instead of a model")
+    ap.add_argument("--self-calibrate", action="store_true",
+                    help="add test (b-auto): personalization learned from label-free punches (the auto-labeler's "
+                         "movements) instead of reviewed ones, as a live system could do in a warm-up minute")
+    ap.add_argument("--auto-qualities", nargs="+", default=list(AUTO_QUALITIES),
+                    help="with --self-calibrate: which auto-labeler movements count as punches")
     ap.add_argument("--save", default="models/candidates/predictor.joblib")
     args = ap.parse_args()
+    globals()["AUTO_QUALITIES"] = tuple(args.auto_qualities)
     save = Path(args.save)
     if save.resolve().parent != Path("models/candidates").resolve():
         ap.error("--save must be a file in models/candidates/ (installed models are never overwritten)")
@@ -420,7 +492,16 @@ def main():
               f"({sum(q['follow'] for q in nat)} follow-ups), prompted {sum(q['kind'] == PROMPTED for q in s['punches'])}"
               f", duplicates merged {s['merged']}")
     rng = np.random.default_rng(0)
+    n_real = len(sessions)
     plan, notes = tests(sessions)
+    if args.self_calibrate:
+        folds, offsets = self_calibration_folds(sessions, args.horizon)
+        if folds:
+            plan.append(("(b-auto) self-calibration",
+                         "like (b), but this person's first half is learned from LABEL-FREE punches (auto-labeler "
+                         "movements, start moved by the median auto->reviewed gap of the OTHER people: "
+                         + ", ".join(f"{p} {o:+d} fr" for p, o in offsets.items())
+                         + "); scored on the second half with reviewed labels", folds))
     for n in notes:
         print("\n" + n)
     for name, why, folds in plan:
@@ -460,6 +541,7 @@ def main():
         return                      # a hand-written rule has nothing to save
     # final model on everything usable, threshold from out-of-fold scores
     cols = list(range(len(names)))
+    sessions = sessions[:n_real]                # never the label-free copies
     parts = [(i, 0, len(s["t"])) for i, s in enumerate(sessions)]
     try:
         model = fit(sessions, parts, cols)

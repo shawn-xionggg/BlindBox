@@ -218,6 +218,18 @@ class ControlTests(unittest.TestCase):
         _, hit, rand97, tally = run_controls(telegraph=False, sims=60)
         self.assertLess(hit, hit_tel - .3, tally['first punches'])
 
+    def test_self_calibration_copy_uses_no_reviewed_labels(self):
+        s = fake_session(n=600, punches=[(100, 106), (300, 306)])
+        s.update(name='x', cf=np.ones((600, 17)), feints=[50],
+                 cands=[dict(departure=95, peak=104, quality='clean'), dict(departure=200, peak=207, quality='combo'),
+                        dict(departure=400, peak=405, quality='glitch')])
+        a = pt.auto_copy(s, 3, pdx.H)
+        self.assertEqual([q['frame'] for q in a['punches']], [98, 203])     # auto starts + offset, glitch dropped
+        self.assertEqual(a['feints'], [])
+        self.assertEqual([q['frame'] for q in s['punches']], [100, 300])    # the reviewed session is untouched
+        self.assertEqual(a['y'][203 - 3], 1)                                # "punch soon" before an auto start
+        self.assertNotEqual(a['y'][300 - 3], 1)                             # nothing from the reviewed 300
+
     def test_plan_depends_on_performers(self):
         def sess(name, performer, natural):
             return dict(name=name, performer=performer, t=np.arange(600) / FPS,
