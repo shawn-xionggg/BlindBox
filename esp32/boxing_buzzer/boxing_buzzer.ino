@@ -5,12 +5,13 @@
   detector decides. The ESP32 starts the right buzzer(s) immediately (nothing
   blocks or waits) and stops them on its own after the cue's length.
 
-  Which buzzer plays (default MOVE_TOWARD_BUZZ = true: "move toward the buzz"):
-    'L' DODGE LEFT   -> LEFT ear            'R' DODGE RIGHT -> RIGHT ear
-    'D' DUCK         -> FRONT               'B' STEP BACK   -> ALL THREE
-    'I' INCOMING (one-beep mode) -> FRONT
-  With MOVE_TOWARD_BUZZ = false the ears swap: the buzz is on the side the punch
-  comes FROM, so you move away from it. Try both; keep the faster one.
+  Which buzzer plays (default MOVE_TOWARD_BUZZ = false: "the buzz is where the punch
+  comes FROM, so you flinch away from it"):
+    punch coming from your LEFT  -> laptop sends 'R' (DODGE RIGHT) -> LEFT ear buzzes
+    punch coming from your RIGHT -> laptop sends 'L' (DODGE LEFT)  -> RIGHT ear buzzes
+    'D' DUCK (straight punch, from the front) -> FRONT
+    'B' STEP BACK (uppercut) -> ALL THREE        'I' INCOMING (one-beep mode) -> FRONT
+  With MOVE_TOWARD_BUZZ = true the ears swap ("move toward the buzz").
 
   Other bytes:
     'H' heartbeat (every video frame)   'P' ping -> replies 'K' (latency test)
@@ -24,10 +25,13 @@
   crashed, cable pulled, WiFi dropped), all buzzers chirp once a second until
   bytes come back.
 
-  Wiring (classic ESP32 dev board; see esp32/README.md):
-    FRONT buzzer +  -> GPIO 25      LEFT ear +  -> GPIO 26      RIGHT ear +  -> GPIO 27
+  Wiring for the ESP32-S3-DevKitC-1 (any N..R.. flash/PSRAM version; see esp32/README.md):
+    FRONT buzzer +  -> GPIO 4       LEFT ear +  -> GPIO 5       RIGHT ear +  -> GPIO 6
     all three buzzers -  -> GND
-  Passive buzzers (need a tone): ACTIVE_BUZZER = false.  Active (beep on plain power): true.
+  (Classic ESP32 boards: use 25 / 26 / 27 instead.)
+  Each buzzer has its own type setting below:
+    passive (needs a tone, pitch can change)  -> false   (the two ear buzzers)
+    active  (beeps by itself on plain power)  -> true
 */
 
 #include <WiFi.h>
@@ -42,11 +46,16 @@
 #endif
 
 // ------------------------------------------------------------------ settings
-const int      PIN_FRONT     = 25;
-const int      PIN_LEFT      = 26;
-const int      PIN_RIGHT     = 27;
-const bool     ACTIVE_BUZZER = false;
-const bool     MOVE_TOWARD_BUZZ = true;
+// ESP32-S3-DevKitC-1: GPIO 4/5/6 are plain I/O pins, free on every N..R.. version
+// (26-37 are taken by flash/PSRAM, 19/20 by USB, 0/3/45/46 affect booting, 48 or 38 is the RGB LED).
+const int      PIN_FRONT     = 4;
+const int      PIN_LEFT      = 5;
+const int      PIN_RIGHT     = 6;
+// Buzzer type, per buzzer: front = active (fixed pitch), ears = passive (play the cue pitches).
+const bool     FRONT_IS_ACTIVE = true;
+const bool     LEFT_IS_ACTIVE  = false;
+const bool     RIGHT_IS_ACTIVE = false;
+const bool     MOVE_TOWARD_BUZZ = false;   // false: buzz on the side the punch comes from
 const bool     USE_WIFI      = true;
 const char*    AP_SSID       = "dodge-hat";
 const char*    AP_PASS       = "dodgehat123";   // must be 8+ characters
@@ -56,6 +65,7 @@ const uint32_t HEARTBEAT_TIMEOUT_MS = 600;
 
 enum { BZ_FRONT = 1, BZ_LEFT = 2, BZ_RIGHT = 4, BZ_ALL = 7 };
 const int PINS[3]     = {PIN_FRONT, PIN_LEFT, PIN_RIGHT};
+const bool ACTIVE[3]  = {FRONT_IS_ACTIVE, LEFT_IS_ACTIVE, RIGHT_IS_ACTIVE};
 const int CHANNELS[3] = {0, 2, 4};   // LEDC channels on separate timers (core 2.x)
 
 struct Cue { char code; uint8_t mask; uint16_t freq; uint16_t ms; };
@@ -78,7 +88,7 @@ uint32_t lastFaultChirpMs = 0;
 void outInit(int i) {
   pinMode(PINS[i], OUTPUT);
   digitalWrite(PINS[i], LOW);
-  if (ACTIVE_BUZZER) return;
+  if (ACTIVE[i]) return;               // active buzzer: plain on/off, no PWM needed
 #if ESP_ARDUINO_VERSION_MAJOR >= 3
   ledcAttach(PINS[i], 1000, 8);
   ledcWrite(PINS[i], 0);
@@ -90,7 +100,7 @@ void outInit(int i) {
 }
 
 void outOn(int i, uint16_t freq) {
-  if (ACTIVE_BUZZER) { digitalWrite(PINS[i], HIGH); return; }
+  if (ACTIVE[i]) { digitalWrite(PINS[i], HIGH); return; }   // its own fixed pitch
 #if ESP_ARDUINO_VERSION_MAJOR >= 3
   ledcWriteTone(PINS[i], freq);
 #else
@@ -99,7 +109,7 @@ void outOn(int i, uint16_t freq) {
 }
 
 void outOff(int i) {
-  if (ACTIVE_BUZZER) { digitalWrite(PINS[i], LOW); return; }
+  if (ACTIVE[i]) { digitalWrite(PINS[i], LOW); return; }
 #if ESP_ARDUINO_VERSION_MAJOR >= 3
   ledcWriteTone(PINS[i], 0);     // frequency 0 = silent
 #else
@@ -147,7 +157,7 @@ void handleByte(char c, bool fromUdp) {
 }
 
 void setup() {
-  if (!MOVE_TOWARD_BUZZ) {                 // buzz the side the punch comes FROM instead
+  if (!MOVE_TOWARD_BUZZ) {                 // buzz the side the punch comes FROM
     for (Cue& cue : CUES) {
       if (cue.code == 'L') cue.mask = BZ_RIGHT;
       if (cue.code == 'R') cue.mask = BZ_LEFT;

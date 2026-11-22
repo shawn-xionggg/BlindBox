@@ -123,10 +123,16 @@ def main():
     print(f"ESP32 answered {len(rtts)}/20 pings: round trip median {statistics.median(rtts):.1f} ms, "
           f"worst {max(rtts):.1f} ms (one way is about half)")
     if args.test:
+        # what you should hear with the firmware default (MOVE_TOWARD_BUZZ = false)
+        expect = {"DODGE LEFT": "punch from your RIGHT -> RIGHT ear",
+                  "DODGE RIGHT": "punch from your LEFT  -> LEFT ear",
+                  "DUCK": "straight punch -> FRONT",
+                  "STEP BACK": "uppercut -> ALL THREE",
+                  "INCOMING": "one-beep mode -> FRONT"}
         for name in CODES:
-            print("playing", name, flush=True)
+            print(f"{name:12s} {expect[name]}", flush=True)
             esp.send(name)
-            time.sleep(1.0)
+            time.sleep(1.2)
     esp.close()
 
 
