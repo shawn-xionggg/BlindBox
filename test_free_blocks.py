@@ -322,6 +322,8 @@ class ReviewSelectionTests(unittest.TestCase):
         self.assertTrue(files, "no recorded sessions found")
         for f in files:
             all_cands = json.loads(f.read_text())["candidates"]
+            if any(c.get("family") == "FREE" for c in all_cands):
+                continue    # a --free session: the old selection never knew free boxing
             for kw in (dict(), dict(messy=True), dict(everything=True), dict(messy=True, everything=True)):
                 self.assertEqual(review_candidates(all_cands, **kw), old_review_selection(all_cands, **kw),
                                  f"{f.name} {kw}")

@@ -54,14 +54,28 @@ def write_session(folder, cands, n=400, labels=None, commands=('JAB',), command_
 
 
 def run_review(npz, keys, extra=()):
+    """keys: a string of key presses; a tuple ('click', x, y) in place of a key clicks the window there."""
     cap = Mock()
     cap.get.return_value = 400
     cap.read.return_value = (True, np.zeros((48, 64, 3), np.uint8))
+    mouse = []
+    presses = iter([k for k in keys] + ['q'] * 3)
+
+    def wait(ms):
+        k = next(presses)
+        if isinstance(k, tuple) and k[0] == 'wheel':     # ('wheel', +1 = scroll up / -1 = down)
+            mouse[0](rl.cv2.EVENT_MOUSEWHEEL, 0, 0, (120 * k[1]) << 16, None)
+            return 255
+        if isinstance(k, tuple):
+            mouse[0](rl.cv2.EVENT_LBUTTONDOWN, k[1], k[2], 0, None)
+            return 255
+        return ord(k)
     with patch.object(sys, 'argv', ['review_labels.py', str(npz), *extra]), \
          patch.object(rl.cv2, 'VideoCapture', return_value=cap), \
          patch.object(rl.cv2, 'namedWindow'), patch.object(rl.cv2, 'imshow'), \
+         patch.object(rl.cv2, 'setMouseCallback', side_effect=lambda win, fn: mouse.append(fn)), \
          patch.object(rl.cv2, 'destroyAllWindows'), \
-         patch.object(rl.cv2, 'waitKey', side_effect=[ord(k) for k in keys] + [ord('q')] * 3), \
+         patch.object(rl.cv2, 'waitKey', side_effect=wait), \
          contextlib.redirect_stdout(io.StringIO()) as out:
         rl.main()
     return out.getvalue()
@@ -84,6 +98,30 @@ class ReviewToolTests(unittest.TestCase):
             self.assertEqual([states[i]['decision'] for i in '012'], ['yes', 'feint', 'no'])
             self.assertEqual((states['0']['auto'], states['0']['initial']), (100, 100))
             self.assertIn('feint 1', log)
+
+    def test_step_frames_and_click_to_set_start(self):
+        with workspace_temp() as tmp:
+            npz = write_session(tmp, [cand(100), cand(150), cand(200), cand(250), cand(300)])
+            # each candidate opens paused on its start frame
+            # 1: 'd' 'd' step 2 frames forward, 's' = start there, 'y'
+            # 2: click the first thumbnail (offset -2) = start there, 'y'
+            # 3: scroll up 3 times (3 frames back), click the big picture = start, click the CROSS button
+            # 4: click the timeline at its far left (the clip's first frame, -15), 's', then the NO button
+            # 5: click the HOOK from-the-left button straight away
+            cross = next(b for b in rl.BUTTONS if b[1] == 'CROSS')
+            no = next(b for b in rl.BUTTONS if b[1] == 'no')
+            hook = next(b for b in rl.BUTTONS if b[1] == 'HOOK_L')
+            mid = lambda b: ('click', (b[2] + b[4]) // 2, (b[3] + b[5]) // 2)
+            run_review(npz, ['d', 'd', 's', 'y',
+                             ('click', 5, rl.STRIP_Y + 10), 'y',
+                             ('wheel', 1), ('wheel', 1), ('wheel', 1), ('click', 100, 100), mid(cross),
+                             ('click', 2, rl.TIMELINE[0] + 5), 's', mid(no),
+                             mid(hook)])
+            marks = labels_of(npz)['reviewed']
+            self.assertEqual([(m['departure'], m['family']) for m in marks],
+                             [(102, 'JAB'), (148, 'JAB'), (197, 'CROSS'), (300, 'HOOK_L')])
+            states = json.loads(npz.with_suffix('.review_reviewed.json').read_text())
+            self.assertEqual((states['3']['decision'], states['3']['departure']), ('no', 235))
 
     def test_blind_second_reviewer_is_kept_apart_and_jittered(self):
         main_marks = [dict(preparation=None, departure=100, family='JAB')]
