@@ -595,6 +595,9 @@ int main(int argc, char **argv) {
     bool file_pose = false, use_hat = false, fp16 = false;
     int threads = 4, camera_unit = -1, prio = 0;
     double seconds = 0;
+    // Cue threshold on the model's punch probability. Picked on the training sessions:
+    // 0.967 = ~1 false alarm/min, 0.949 = ~2/min (default), 0.923 = ~4/min (catches more punches).
+    double threshold = EARLY_THRESHOLD_BUDGET_2;
     for (int i = 1; i < argc; i++) {
         std::string a = argv[i];
         if (a == "--frames" && i + 1 < argc) frames_path = argv[++i];
@@ -609,6 +612,7 @@ int main(int argc, char **argv) {
         else if (a == "--seconds" && i + 1 < argc) seconds = std::atof(argv[++i]);
         else if (a == "--prio" && i + 1 < argc) prio = std::atoi(argv[++i]);
         else if (a == "--snapshot" && i + 1 < argc) snap_path = argv[++i];
+        else if (a == "--threshold" && i + 1 < argc) threshold = std::atof(argv[++i]);
         else { usage(); return 2; }
     }
     if (!frames_path == (camera_unit < 0) || (file_pose && camera_unit >= 0)) { usage(); return 2; }
@@ -660,12 +664,13 @@ int main(int argc, char **argv) {
     }
     if (camera_unit >= 0)
         std::printf("vision: camera unit %d, pose=%s, threads=%d, threshold %.3f, hat %s (Ctrl-C to stop)\n", camera_unit,
-                    backend, threads, EARLY_THRESHOLD_BUDGET_2, use_hat ? "on" : "off");
+                    backend, threads, threshold, use_hat ? "on" : "off");
     else
         std::printf("vision: %d frames %dx%d, pose=%s, threads=%d, threshold %.3f\n", src.n, src.w, src.h,
-                    backend, threads, EARLY_THRESHOLD_BUDGET_2);
+                    backend, threads, threshold);
 
     Detector det;
+    det.threshold = threshold;
     std::vector<double> t_pose, t_feat, t_total, t_capture;
     double t, scores[2], X[2][EARLY_N_FEATURES];
     V2 kp[17], fkp[17];
