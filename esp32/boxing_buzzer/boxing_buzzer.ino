@@ -36,6 +36,7 @@
 
 #include <WiFi.h>
 #include <WiFiUdp.h>
+#include "HWCDC.h"
 #if defined(__has_include)
 #if __has_include(<esp_arduino_version.h>)
 #include <esp_arduino_version.h>
@@ -69,13 +70,18 @@ const bool ACTIVE[3]  = {FRONT_IS_ACTIVE, LEFT_IS_ACTIVE, RIGHT_IS_ACTIVE};
 const int CHANNELS[3] = {0, 2, 4};   // LEDC channels on separate timers (core 2.x)
 
 struct Cue { char code; uint8_t mask; uint16_t freq; uint16_t ms; };
-// Same pitches/lengths as the laptop beeps in dodge_live.py.
+// Pitches chosen for reaction time: reaction to a sound is faster the louder it is, human hearing is
+// most sensitive at ~2-4 kHz (ear-canal resonance), and small passive buzzers are loudest at their
+// resonance, also ~2-4 kHz. (The old 400-1200 Hz tones were far quieter for the same drive.)
+// The two ears differ slightly (2.7 vs 3.1 kHz) so left/right stay distinguishable if sound bleeds across.
+// The front buzzer is active (fixed pitch), so its freq value is ignored.
+const uint16_t FAULT_HZ = 1000;   // fault alarm: lower, clearly not a cue
 Cue CUES[] = {
-  {'L', BZ_LEFT,  600, 120},   // DODGE LEFT
-  {'R', BZ_RIGHT, 1200, 120},  // DODGE RIGHT
-  {'D', BZ_FRONT, 900, 250},   // DUCK
-  {'B', BZ_ALL,   400, 350},   // STEP BACK
-  {'I', BZ_FRONT, 1000, 150},  // INCOMING
+  {'L', BZ_LEFT,  2700, 120},  // DODGE LEFT
+  {'R', BZ_RIGHT, 3100, 120},  // DODGE RIGHT
+  {'D', BZ_FRONT, 2700, 250},  // DUCK
+  {'B', BZ_ALL,   2900, 350},  // STEP BACK
+  {'I', BZ_FRONT, 2700, 150},  // INCOMING
 };
 
 WiFiUDP udp;
@@ -131,11 +137,19 @@ void play(uint8_t mask, uint16_t freq, uint16_t ms) {
   if (toneEndMs == 0) toneEndMs = 1;
 }
 
+// Where the byte being handled came from, so a ping reply goes back the same way.
+// The built-in USB port (USB 303a:1001) needs no baud rate: the QNX Pi uses it, because
+// it can't set the UART chip's baud (that USB request crashes the Pi's USB stack).
+HWCDC NativeUSB;                 // the built-in USB port (core 3.x makes HWCDCSerial only with CDC-on-boot)
+bool fromNativeUsb = false;
+
 void reply(char c, bool fromUdp) {
   if (fromUdp) {
     udp.beginPacket(udp.remoteIP(), udp.remotePort());
     udp.write((uint8_t)c);
     udp.endPacket();
+  } else if (fromNativeUsb) {
+    NativeUSB.write(c);
   } else {
     Serial.write(c);
   }
@@ -148,7 +162,7 @@ void handleByte(char c, bool fromUdp) {
     case 'P': reply('K', fromUdp); return;
     case 'S': soundOff(); return;
     case 'X': armed = false; soundOff(); return;
-    case 'F': play(BZ_ALL, 300, 400); return;
+    case 'F': play(BZ_ALL, FAULT_HZ, 400); return;
   }
   for (const Cue& cue : CUES) {
     if (cue.code == c) { play(cue.mask, cue.freq, cue.ms); return; }
@@ -165,6 +179,8 @@ void setup() {
   }
   for (int i = 0; i < 3; i++) outInit(i);
   Serial.begin(115200);
+  NativeUSB.setTxTimeoutMs(0);           // never block the buzzer loop if no host reads replies
+  NativeUSB.begin();
   if (USE_WIFI) {
     WiFi.mode(WIFI_AP);
     WiFi.softAP(AP_SSID, AP_PASS);
@@ -176,12 +192,16 @@ void setup() {
   Serial.println("boxing_buzzer ready (3 buzzers)");
   // power-on check: front, left, right, one after another (so you can hear each is wired)
   const uint8_t order[3] = {BZ_FRONT, BZ_LEFT, BZ_RIGHT};
-  for (int k = 0; k < 3; k++) { play(order[k], 1500, 80); delay(150); soundOff(); }
+  for (int k = 0; k < 3; k++) { play(order[k], 2700, 80); delay(150); soundOff(); }
 }
 
 void loop() {
-  // 1) USB serial
+  // 1) USB serial: the UART port (laptop, COM8) and the built-in USB port (QNX Pi)
+  fromNativeUsb = false;
   while (Serial.available() > 0) handleByte((char)Serial.read(), false);
+  fromNativeUsb = true;
+  while (NativeUSB.available() > 0) handleByte((char)NativeUSB.read(), false);
+  fromNativeUsb = false;
 
   // 2) WiFi UDP (a packet may hold several bytes)
   if (USE_WIFI) {
@@ -202,7 +222,7 @@ void loop() {
   // 4) heartbeat watchdog: laptop gone -> all buzzers chirp once a second
   if (armed && now - lastRxMs > HEARTBEAT_TIMEOUT_MS) {
     if (now - lastFaultChirpMs >= 1000) {
-      play(BZ_ALL, 300, 80);
+      play(BZ_ALL, FAULT_HZ, 80);
       lastFaultChirpMs = now;
     }
   }
