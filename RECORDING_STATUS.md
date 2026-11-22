@@ -18,6 +18,8 @@ Check it all works:
 
 ## 2. Record a person
 
+**Recording on another laptop? Follow [RECORDING_GUIDE.md](RECORDING_GUIDE.md)** (also written so that laptop's Claude Code can run it). Quick check after each session: `python check_session.py --latest`.
+
 1. **Light check** (records nothing). Puncher stands where they'll box, 1.5–2 m away, in the middle of the picture. Add light until the fps line is green (~30). If it beeps, the shoulders are lost or the puncher is at the edge: step back or center.
    ```powershell
    .venv\Scripts\python.exe collect.py --source 1 --check-light
