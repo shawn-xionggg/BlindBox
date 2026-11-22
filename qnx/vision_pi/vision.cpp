@@ -595,9 +595,14 @@ int main(int argc, char **argv) {
     bool file_pose = false, use_hat = false, fp16 = false;
     int threads = 4, camera_unit = -1, prio = 0;
     double seconds = 0;
-    // Cue threshold on the model's punch probability. Picked on the training sessions:
-    // 0.967 = ~1 false alarm/min, 0.949 = ~2/min (default), 0.923 = ~4/min (catches more punches).
+    // Cue threshold on the model's punch probability. Default: the model's live-demo value
+    // (EARLY_THRESHOLD_DEMO, 0.828 for the hat-camera leave-guard model; laptop equivalent 0.82 tested live).
+    // Stricter: EARLY_THRESHOLD_BUDGET_2 (~4 false alarms/min offline) / _BUDGET_4.
+#ifdef EARLY_THRESHOLD_DEMO
+    double threshold = EARLY_THRESHOLD_DEMO;
+#else
     double threshold = EARLY_THRESHOLD_BUDGET_2;
+#endif
     for (int i = 1; i < argc; i++) {
         std::string a = argv[i];
         if (a == "--frames" && i + 1 < argc) frames_path = argv[++i];
