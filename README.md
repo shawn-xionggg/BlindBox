@@ -14,6 +14,7 @@ A HackWestern project for the **QNX track**. A blindfolded person wears a hat wi
 > - [PLAN-qnx-boxing-assistant.md](PLAN-qnx-boxing-assistant.md): original plan
 > - **[HEAD_MOUNTED_TRAINING.md](HEAD_MOUNTED_TRAINING.md): the final training, with the camera on the wearer's head. Start here for new data.**
 > - [TEAMMATE_AUGMENTATION_GUIDE.md](TEAMMATE_AUGMENTATION_GUIDE.md): run the lighting / frame-rate training on a fast machine
+> - [PREDICTION.md](PREDICTION.md): experimental punch prediction (warning before the fist moves): how it's trained, tested and what it found so far
 
 ---
 
@@ -232,6 +233,7 @@ Anyone can then retrain with `python early_detector.py`. Share the `.mp4` some o
 | `review_labels.py` | y/n review UI (`--messy` for the second pass, `--reviewer` for a blind second opinion) |
 | `combo_candidates.py` | Adds combo follow-up punches in free-boxing blocks to the review |
 | `label_agreement.py` | How well two reviewers agree (decisions and start frames) |
+| `predict_dataset.py`, `predict_trainer.py` | Experimental punch **prediction** (warn before the fist moves), tested on unseen people; see [PREDICTION.md](PREDICTION.md) |
 | `early_dataset.py` | Features + labels from reviewed sessions |
 | `early_detector.py` | Cross-validated training and evaluation |
 | `flow_features.py` | Optical-flow features (cached in `features/`) |

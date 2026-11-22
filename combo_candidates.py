@@ -137,7 +137,8 @@ def find_launches(t, kp, cf, mag=None, min_rise=0.2, min_speed=1.5, surge=1.3, b
         for s, j, rise in bursts:
             hi = int(np.searchsorted(t, t[s] + 0.5))
             peak = s + int(np.nanargmax(e_s[s:max(hi, j + 1)])) if np.isfinite(e_s[s:max(hi, j + 1)]).any() else j
-            out.append(dict(start=s, peak=max(peak, s + 1), wrist=k, rise=rise))
+            # end: the last frame of the burst; deciding that a launch happened needs frames up to here
+            out.append(dict(start=s, peak=max(peak, s + 1), end=j, wrist=k, rise=rise))
     # a punch turns the body, so both fists move: of two launches within 100 ms, keep the stronger
     out.sort(key=lambda e: e["start"])
     kept = []
