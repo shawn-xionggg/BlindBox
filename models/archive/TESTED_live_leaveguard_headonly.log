@@ -1,0 +1,41 @@
+﻿building session_20261121_024335_748065.npz
+building session_20261121_030328_194149.npz
+building session_20261121_095106_097514.npz
+building session_20261121_115113_071950.npz
+building session_20261121_223419_058659.npz
+building session_20261121_235935_259319.npz
+building session_20261122_001919_731330.npz
+camera mounts: {'head': 3, 'desk': 4} sessions
+
+                             | caught <=50ms <=100 <=150 <=200 <=300 | median  | fa/min | feints
+--- threshold picked on training blocks for <= 2 false alarms/min ---
+learned                      |   14%   24%   28%   40%   47% |    96ms |   5.07 | 4/17
+                               hooks only: caught <=200ms 29/55, <=300ms 33/55
+launch (hand-made)           |    2%    2%    5%   11%   14% |   160ms |   2.07 | 0/17
+                               hooks only: caught <=200ms 14/55, <=300ms 15/55
+    learned on session_20261121_223419_058659.npz: caught <=200ms 30/74, 2.98 fa/min
+    learned on session_20261121_235935_259319.npz: caught <=200ms 29/65, 7.21 fa/min
+    learned on session_20261122_001919_731330.npz: caught <=200ms 12/38, 7.20 fa/min
+--- threshold picked on training blocks for <= 4 false alarms/min ---
+learned                      |   19%   33%   38%   52%   60% |    96ms |   7.89 | 7/17
+                               hooks only: caught <=200ms 35/55, <=300ms 38/55
+launch (hand-made)           |    5%    8%   12%   20%   25% |   160ms |   4.13 | 0/17
+                               hooks only: caught <=200ms 18/55, <=300ms 22/55
+    learned on session_20261121_223419_058659.npz: caught <=200ms 36/74, 5.21 fa/min
+    learned on session_20261121_235935_259319.npz: caught <=200ms 36/65, 11.22 fa/min
+    learned on session_20261122_001919_731330.npz: caught <=200ms 20/38, 10.08 fa/min
+
+saved models/candidates/reactive_leaveguard_headonly.joblib; thresholds by budget {2.0: 0.922, 4.0: 0.909}
+top features (permutation importance, in-sample, indicative only):
+  mag_rel_l0     0.3359
+  relx           0.2472
+  rely           0.2466
+  disp_rest_l2   0.2298
+  energy_l1      0.0925
+  other_speed    0.0773
+  torso_mag      0.0745
+  disp_rest_l1   0.0731
+  torso_div      0.0663
+  disp_rest_l0   0.0640
+  launch_l0      0.0624
+  speed_l0       0.0490
