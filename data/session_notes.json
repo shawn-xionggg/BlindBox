@@ -8,7 +8,8 @@
     "volunteer4": {"skill": "beginner", "stance": "orthodox", "note": "on hold: coming back for a longer session (record as volunteer4 again)"},
     "volunteer5": {"skill": "beginner", "stance": "orthodox"},
     "volunteer6": {"skill": "beginner", "stance": "orthodox", "erratic": true,
-                   "note": "very unpredictable, no clear plan: e.g. 3 hooks in a row. Kept at normal weight; report her test results separately"}
+                   "note": "very unpredictable, no clear plan: e.g. 3 hooks in a row. Kept at normal weight; report her test results separately"},
+    "volunteer7": {"skill": "beginner", "stance": "orthodox"}
   },
   "sessions": {
     "session_20261121_192413_312171": {"exclude": true, "note": "36 s test run, 31% tracked: junk, kept only because sessions are never deleted"},
@@ -26,6 +27,8 @@
     "session_20261121_231908_874846": {"performer": "volunteer5", "wearer": "you",
                                        "note": "5.4 min, ~2 min free boxing; 99% tracked"},
     "session_20261121_233345_289835": {"performer": "volunteer6", "wearer": "you",
-                                       "note": "5.1 min, 30 s prompt blocks, 3 min free boxing; 97% tracked; only ~21 fps"}
+                                       "note": "5.1 min, 30 s prompt blocks, 3 min free boxing; 97% tracked; only ~21 fps"},
+    "session_20261121_235935_259319": {"performer": "volunteer7", "wearer": "you",
+                                       "note": "6.5 min, 30 s prompt blocks, 4 min free boxing; 99% tracked, ~28-31 fps"}
   }
 }
