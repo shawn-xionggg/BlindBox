@@ -79,7 +79,19 @@ git push
 - Send the `.mp4` files separately (Drive / USB) to whoever labels. Labeling needs the video next to its `.npz` in `data/`.
 - `git pull` before pushing. The labeler pushes `*.labels.json` files, which don't clash with yours. If `session_notes.json` clashes, keep both sides' entries.
 
-## 5. Troubleshooting
+## 5. Second reviewer (blind check of the labels)
+
+To check that two people put punch starts on the same frames, the second person labels a session the first person also labels, **without looking at their labels**:
+1. `git pull`, then copy that session's `.mp4` (from the first labeler, by Drive/USB) into `data/`, next to its `.npz` and `.auto_candidates.json`.
+2. Label it (the window opens paused; scroll to the first frame the fist moves TOWARD the camera, click the picture, click the type; NO / FEINT when it isn't a punch):
+   ```powershell
+   .venv\Scripts\python.exe review_labels.py data\session_20261121_235935_259319.npz --reviewer YOURNAME
+   .venv\Scripts\python.exe review_labels.py data\session_20261121_235935_259319.npz --reviewer YOURNAME --messy
+   ```
+   Saved as `check_YOURNAME`, never used for training. Each green frame starts up to 2 frames off the computer's guess on purpose.
+3. Commit and push **only** `data\*.labels.json`. The labeler then runs `python label_agreement.py data\session_X.npz --reviewer YOURNAME`.
+
+## 6. Troubleshooting
 
 | Problem | Fix |
 |---|---|
