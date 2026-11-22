@@ -52,3 +52,7 @@ yolo11n-pose_tflite/*tensor_correspondence_report.json
 *.key
 *license*
 .claude/settings.local.json
+
+# QNX vision test data/outputs (big or regenerated)
+qnx/vision_pi/test_frames.bin
+qnx/vision_pi/*.csv

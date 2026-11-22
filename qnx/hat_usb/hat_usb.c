@@ -237,6 +237,16 @@ static int cue(char c) {
     return rc;
 }
 
+/* ---- library API (vision links this file with -DHAT_LIB, see hat.h) ---- */
+int hat_open(void) {
+    static char name[] = "hat";
+    static char *argv0[] = { name, NULL };
+    return open_hat(1, argv0);
+}
+
+int hat_send(char c) { return send_bytes(&c, 1); }
+
+#ifndef HAT_LIB
 int main(int argc, char **argv) {
     const char *mode = argc > 1 ? argv[1] : "test";
     setvbuf(stdout, NULL, _IOLBF, 0);   /* print each line right away, even into a log file */
@@ -310,3 +320,4 @@ int main(int argc, char **argv) {
     }
     return 0;
 }
+#endif /* HAT_LIB */
