@@ -100,6 +100,7 @@ class FreeSchedule:
 
 FONT = cv2.FONT_HERSHEY_SIMPLEX
 TITLE_SCALE, LINE_SCALE, NOTE_SCALE = 1.3, .65, .9
+OUTLINE = 5                  # extra pixels of black around every letter
 
 
 def _text_block(frame, rows):
@@ -108,7 +109,7 @@ def _text_block(frame, rows):
     on-screen copy is drawn on: collect.py writes the video frame before this."""
     boxes = []
     for message, y, _, scale, thick in rows:
-        (w, h), base = cv2.getTextSize(message, FONT, scale, thick + 2)
+        (w, h), base = cv2.getTextSize(message, FONT, scale, thick + OUTLINE)
         boxes.append((12 + w, y - h, y + base))
     H, W = frame.shape[:2]
     x1 = min(W, max(b[0] for b in boxes) + 10)
@@ -116,8 +117,13 @@ def _text_block(frame, rows):
     roi = frame[y0:y1, 2:x1]
     roi[:] = (roi * .35).astype(np.uint8)
     for message, y, color, scale, thick in rows:
-        cv2.putText(frame, message, (12, y), FONT, scale, BLACK, thick + 2, cv2.LINE_AA)
-        cv2.putText(frame, message, (12, y), FONT, scale, color, thick, cv2.LINE_AA)
+        outlined(frame, message, (12, y), scale, color, thick)
+
+
+def outlined(frame, message, xy, scale, color, thick=1):
+    """Text with a thick black outline, readable over a bright or busy background."""
+    cv2.putText(frame, message, xy, FONT, scale, BLACK, thick + OUTLINE, cv2.LINE_AA)
+    cv2.putText(frame, message, xy, FONT, scale, color, thick, cv2.LINE_AA)
 
 
 def draw(frame, schedule, t):
@@ -128,7 +134,7 @@ def draw(frame, schedule, t):
     secs = int(math.ceil(max(0., left))) if left is not None else 0
     if schedule.kind == PROMPTS:
         if soon:
-            _text_block(frame, [(f"FREE BOXING next, in {secs}s", 210, GREEN, NOTE_SCALE, 2)])
+            _text_block(frame, [(f"FREE BOXING next, in {secs}s", 255, GREEN, NOTE_SCALE, 2)])
         return False
     h, w = frame.shape[:2]
     color = GREEN if schedule.kind == FREE else BLUE
@@ -141,6 +147,125 @@ def draw(frame, schedule, t):
         rows.append((f"Prompts start in {secs}s", 204 + 32 * len(lines), YELLOW, NOTE_SCALE, 2))
     _text_block(frame, rows)
     return True
+
+
+# what each prompt asks for, in plain words (HOOK_L / HOOK_R = the side of the IMAGE the
+# fist comes from, so the hand is the opposite one)
+COMMAND_HELP = {
+    "JAB": "lead-hand straight punch, pulled short",
+    "CROSS": "rear-hand straight punch, pulled short",
+    "HOOK_L": "swing your RIGHT fist (saved as HOOK_L)",
+    "HOOK_R": "swing your LEFT fist (saved as HOOK_R)",
+    "UPPERCUT": "uppercut, either hand, pulled short",
+    "FEINT": "FAKE a punch start, don't throw it",
+    "STEP_IN": "step toward the wearer, NO punch",
+    "HEAD_TURN": "turn your head, NO punch",
+    "NOD": "nod your head, NO punch",
+    "GLOVE_ADJUST": "fiddle with your hands/gloves, NO punch",
+    "IDLE": "stay in guard, NO punch",
+    "GUARD_SHIFT": "slide your fists left/right, NO punch",
+    "LIGHT CHECK": "nothing recorded: get ~30 fps, then q",
+}
+RED = (90, 90, 255)          # light red: readable on the dark panel
+
+
+# what the screen SAYS for a prompt. The saved names HOOK_L / HOOK_R mean the side of the
+# image, which every puncher read as their own hand (and threw the wrong one), so the
+# screen names the puncher's hand instead. The saved prompt names don't change.
+COMMAND_SHOWN = {"HOOK_L": "RIGHT-HAND HOOK", "HOOK_R": "LEFT-HAND HOOK"}
+
+
+def draw_command(frame, command):
+    """The prompt in big outlined letters, with what it means underneath."""
+    rows = [(COMMAND_SHOWN.get(command, command), 150, YELLOW, 1.6, 4)]
+    if command in COMMAND_HELP:
+        rows.append((COMMAND_HELP[command], 192, WHITE, .75, 2))
+    _text_block(frame, rows)
+
+
+def light_level(fps):
+    """(color, words) for a camera frame rate: the C270 slows down when the scene is dark."""
+    if fps >= 27:
+        return GREEN, "light OK"
+    if fps >= 22:
+        return YELLOW, "add light"
+    return RED, "too dark: add light"
+
+
+def draw_fps(frame, fps, y=None):
+    """Live camera frame rate, colored by whether the light is good enough for ~30 fps."""
+    if fps is None:
+        return
+    color, words = light_level(fps)
+    _text_block(frame, [(f"camera {fps:.0f} fps: {words}", y or frame.shape[0] - 18, color, .75, 2)])
+
+
+def framing_problem(xy, conf, width, min_conf=.35, edge=.04):
+    """Why the puncher can't be used right now, or None. Training needs both shoulders
+    (every feature is measured from them), so a missing shoulder means the frame is lost."""
+    if xy is None or conf is None:
+        return "NOBODY IN VIEW"
+    sh = np.asarray(xy)[[5, 6]]
+    if min(conf[5], conf[6]) < min_conf or not np.isfinite(sh).all():
+        return "SHOULDERS LOST: step back"
+    if sh[:, 0].min() < edge * width or sh[:, 0].max() > (1 - edge) * width:
+        return "AT THE EDGE: move to the middle"
+    return None
+
+
+class FramingAlarm:
+    """Beeps continuously while the puncher is out of frame for longer than `grace`
+    seconds (a brief blur during a fast punch doesn't count). The beeps run on their
+    own thread, so they never slow the camera loop; only the screen shows it in the video."""
+
+    def __init__(self, grace=.4, sound=True, tone=(1200, 120), gap=.08):
+        self.grace, self.sound, self.tone, self.gap = grace, sound, tone, gap
+        self.since = None           # when the current problem started
+        self.reason = None
+        self.on = False             # alarm sounding right now
+        self._thread = None
+        self._stop = False
+
+    def update(self, t, reason):
+        """reason: framing_problem(...) for this frame. Returns the reason while alarming, else None."""
+        if reason is None:
+            self.since = None
+        elif self.since is None:
+            self.since = t
+        self.reason = reason
+        self.on = self.since is not None and t - self.since >= self.grace
+        if self.on and self.sound and self._thread is None:
+            import threading
+            self._thread = threading.Thread(target=self._beep, daemon=True)
+            self._thread.start()
+        return reason if self.on else None
+
+    def _beep(self):
+        import time as _time
+        try:
+            import winsound
+            play = lambda: winsound.Beep(*self.tone)
+        except ImportError:          # not Windows: the terminal bell
+            play = lambda: (print("\a", end="", flush=True), _time.sleep(self.tone[1] / 1000))
+        while not self._stop:
+            if self.on:
+                play()
+                _time.sleep(self.gap)
+            else:
+                _time.sleep(.03)
+
+    def close(self):
+        self._stop = True
+
+
+def draw_alarm(frame, reason, t):
+    """Big blinking red warning plus a red border while the puncher is out of frame."""
+    if reason is None:
+        return
+    h, w = frame.shape[:2]
+    if int(t * 4) % 2:
+        cv2.rectangle(frame, (0, 0), (w - 1, h - 1), (0, 0, 255), 18)
+    _text_block(frame, [("OUT OF FRAME", 395, RED, 1.2, 3), (reason, 430, WHITE, .75, 2)])
 
 
 def plan_text(baseline_s, prompt_s, free_s, performer, stance):

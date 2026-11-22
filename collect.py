@@ -62,8 +62,8 @@ def skeleton(frame, xy, conf):
             cv2.line(frame, tuple(xy[a].astype(int)), tuple(xy[b].astype(int)), (0, 230, 0), 2)
 
 
-def text(frame, message, y, color=(255, 255, 255), scale=.48):
-    cv2.putText(frame, message, (10, y), cv2.FONT_HERSHEY_SIMPLEX, scale, color, 1, cv2.LINE_AA)
+def text(frame, message, y, color=(255, 255, 255), scale=.5):
+    free_blocks.outlined(frame, message, (10, y), scale, color, 1)   # black outline: readable anywhere
 
 
 def save_session(path, timestamps, keypoints, confidences, labels, rejected, model, source, session_id=None, glove_blobs=None, commands=(), command_times=(), performer="unknown", mount="desk", wearer="",
@@ -118,12 +118,19 @@ def main():
     ap.add_argument('--stance', choices=('orthodox', 'southpaw', 'unknown'), default='unknown',
                     help="the puncher's stance: orthodox = left hand leads, southpaw = right hand leads")
     ap.add_argument('--glove-thresh', type=float, default=3., help='Relative-area log growth per second')
+    ap.add_argument('--check-light', action='store_true',
+                    help="only show the camera and its live frame rate; NOTHING is recorded. Move lamps until it "
+                         "reads ~30 fps (the C270 slows down in dim light), press q, then record")
+    ap.add_argument('--no-beep', action='store_true',
+                    help="don't beep when the puncher is out of frame (the red screen warning stays)")
     args = ap.parse_args()
+    if args.check_light:
+        args.script = args.free = args.negatives_only = False
     if args.benchmark_frames <= 0 or args.launch_thresh <= 0:
         ap.error("Frame limit and launch threshold must be positive")
     if args.opencv_threads < 1:
         ap.error("--opencv-threads must be positive")
-    if not (args.benchmark or args.from_video) and str(args.source).isdigit() and args.mount is None:
+    if not (args.benchmark or args.from_video or args.check_light) and str(args.source).isdigit() and args.mount is None:
         ap.error("say where the camera is: --mount head (on the wearer's hat) or --mount desk (fixed)")
     if args.negatives_only and not args.script:
         ap.error("--negatives-only needs --script")
@@ -180,6 +187,9 @@ def main():
     flash_until, start, manual_side = -1., time.perf_counter(), args.manual_side
     capture = LatestCapture(cap) if live and not args.sync_io else None
     timings = StageTimings()
+    # live only: beeps while the puncher's shoulders are lost or at the image edge, so the
+    # wearer/puncher fix the framing at once (untracked frames are useless for training)
+    alarm = free_blocks.FramingAlarm(sound=not args.no_beep) if live and not args.benchmark else None
     print(SAFETY)
     print(INSTRUCTIONS)
     print(__doc__)
@@ -211,10 +221,11 @@ def main():
                 person = runner(frame)
             xy, conf = person if person is not None else (np.full((17, 2), np.nan), np.zeros(17))
             with timings.stage('video write'):
-                if writer is None:
-                    h, w = frame.shape[:2]
-                    writer = VideoSink(stem.with_suffix('.mp4'), fps, (w, h), threaded=not args.sync_io)
-                writer.write(frame)  # Snapshot raw frame before overlay, once per NPZ row.
+                if not args.check_light:
+                    if writer is None:
+                        h, w = frame.shape[:2]
+                        writer = VideoSink(stem.with_suffix('.mp4'), fps, (w, h), threaded=not args.sync_io)
+                    writer.write(frame)  # Snapshot raw frame before overlay, once per NPZ row.
             times.append(t)
             points.append(xy.copy())
             confidences.append(conf.copy())
@@ -261,16 +272,25 @@ def main():
                 # the screen spells out which hand, since the camera faces the puncher.
                 # --free: BASELINE / FREE blocks get their own static screen instead of a prompt
                 block_screen = schedule is not None and free_blocks.draw(frame, schedule, t)
-                if not block_screen:
-                    shown_cmd = {'HOOK_L': 'HOOK_L = hook with your RIGHT hand',
-                                 'HOOK_R': 'HOOK_R = hook with your LEFT hand',
-                                 'GUARD_SHIFT': "GUARD_SHIFT = slide your fists left/right, DON'T punch"}.get(active_command(t), active_command(t))
-                    text(frame, 'COMMAND: '+shown_cmd, 140, (0, 255, 255), .9)
+                if args.check_light:
+                    free_blocks.draw_command(frame, 'LIGHT CHECK')
+                elif args.script and not block_screen:
+                    # big outlined command + what it means (HOOK_L/HOOK_R name the IMAGE side the fist
+                    # comes from: the screen spells out the hand)
+                    free_blocks.draw_command(frame, active_command(t))
+                elif not block_screen:
+                    text(frame, 'COMMAND: '+active_command(t), 140, (0, 255, 255), .9)
                 text(frame, 'Aim for 100+ punches across sessions. l/r/c selects manual side.', 66)
                 if t < flash_until and not block_screen:   # nothing flashes during free boxing
                     text(frame, 'ONSET', 105, (0, 0, 255), 1.)
+                # live camera frame rate over the last ~1 s: tells you if the light is good enough
+                k = min(len(times), 31)
+                free_blocks.draw_fps(frame, (k - 1)/(times[-1]-times[-k]) if k > 5 and times[-1] > times[-k] else None)
+                if alarm is not None:
+                    problem = free_blocks.framing_problem(xy if person is not None else None, conf, frame.shape[1])
+                    free_blocks.draw_alarm(frame, alarm.update(t, problem), t)
                 if segmenter.color.hue is None:
-                    if not block_screen:
+                    if not block_screen and not args.script:
                         text(frame, 'Click glove to sample color (optional)', 170)
                 elif segmenter.hsv is not None:
                     # live glove mask preview: ONLY the gloves should be white
@@ -301,6 +321,8 @@ def main():
                 labels.append(dict(frame=i, side=manual_side, source='manual', detected_time=t, family=active_command(t)))
                 flash_until = t+.4
     finally:
+        if alarm is not None:
+            alarm.close()
         if capture is not None:
             capture.close()
         else:
@@ -316,7 +338,10 @@ def main():
             timings.report(writer)
             if benchmark_dir is not None:
                 shutil.rmtree(benchmark_dir)  # Unique direct child of the workspace.
-        if times and not args.benchmark:
+        if args.check_light and times:
+            k = min(len(times), 91)
+            print(f'Light check done (nothing saved): camera {(k - 1)/max(times[-1]-times[-k], 1e-9):.1f} fps over the last ~3 s')
+        if times and not args.benchmark and not args.check_light:
             labels = [e for e in labels if e['frame'] < len(times)]
             identity = str(original.get('session_id', paired.stem)) if original is not None else None
             save_session(stem.with_suffix('.npz'), times, points, confidences, labels, rejected, args.model, source, identity, raw_blobs, commands, command_times,

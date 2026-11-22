@@ -202,6 +202,53 @@ class CollectFreeTests(unittest.TestCase):
             self.assertEqual(str(z['stance']), 'unknown')
             self.assertTrue(all(c in POOL for c in z['commands']))
 
+    def test_light_check_records_nothing(self):
+        with workspace_temp() as tmp, contextlib.chdir(tmp):
+            log = run_collect(['--source', 'fake.mp4', '--check-light', '--script', '--free'], fake_video(60))
+            self.assertIn('Light check done (nothing saved)', log)
+            self.assertEqual(list(Path('data').glob('*')), [])
+
+    def test_every_prompt_has_plain_words(self):
+        for c in POOL:
+            self.assertIn(c, free_blocks.COMMAND_HELP)
+        self.assertEqual(free_blocks.light_level(30.)[1], 'light OK')
+        self.assertEqual(free_blocks.light_level(20.)[1], 'too dark: add light')
+
+    def test_hooks_named_by_hand_and_swap_note(self):
+        import json
+        import session_notes
+        # HOOK_L = fist from image-left = the puncher's RIGHT hand (camera faces them)
+        self.assertEqual(free_blocks.COMMAND_SHOWN['HOOK_L'], 'RIGHT-HAND HOOK')
+        self.assertEqual(free_blocks.COMMAND_SHOWN['HOOK_R'], 'LEFT-HAND HOOK')
+        with workspace_temp() as tmp:
+            notes = Path(tmp) / 'notes.json'
+            notes.write_text(json.dumps({'sessions': {'s_swapped': {'hooks_swapped': True}}}))
+            cmds = np.array(['JAB', 'HOOK_L', 'HOOK_R', 'FREE'], dtype='<U16')
+            self.assertEqual(session_notes.commands('data/s_swapped.npz', cmds, notes).tolist(),
+                             ['JAB', 'HOOK_R', 'HOOK_L', 'FREE'])
+            self.assertEqual(session_notes.commands('data/other.npz', cmds, notes).tolist(), cmds.tolist())
+        real = session_notes.load()
+        self.assertTrue(real['sessions']['session_20261121_213319_013537']['hooks_swapped'])
+
+    def test_out_of_frame_alarm(self):
+        xy, conf = np.full((17, 2), 300.), np.ones(17)
+        xy[5, 0], xy[6, 0] = 250., 350.
+        self.assertIsNone(free_blocks.framing_problem(xy, conf, 640))
+        self.assertIn('NOBODY', free_blocks.framing_problem(None, None, 640))
+        low = conf.copy(); low[6] = .1
+        self.assertIn('SHOULDERS', free_blocks.framing_problem(xy, low, 640))
+        edge = xy.copy(); edge[5, 0] = 5.
+        self.assertIn('EDGE', free_blocks.framing_problem(edge, conf, 640))
+        alarm = free_blocks.FramingAlarm(grace=.4, sound=False)
+        self.assertIsNone(alarm.update(0., 'SHOULDERS LOST'))      # brief blur: no alarm yet
+        self.assertIsNone(alarm.update(.3, 'SHOULDERS LOST'))
+        self.assertEqual(alarm.update(.5, 'SHOULDERS LOST'), 'SHOULDERS LOST')
+        self.assertIsNone(alarm.update(.6, None))                  # back in frame: stops at once
+        self.assertIsNone(alarm.update(.7, 'SHOULDERS LOST'))      # grace starts over
+        frame = np.zeros((480, 640, 3), np.uint8)
+        free_blocks.draw_alarm(frame, 'SHOULDERS LOST', .3)
+        self.assertGreater(frame.sum(), 0)
+
     def test_argument_checks(self):
         import collect
         bad = [

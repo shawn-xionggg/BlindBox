@@ -111,6 +111,11 @@ def main():
     n = len(t)
     dt = np.median(np.diff(t))
     cmds = z["commands"] if "commands" in z.files else np.array([])
+    # some punchers threw the opposite hook to the prompt (data/session_notes.json)
+    import session_notes
+    cmds = session_notes.commands(npz, cmds)
+    if len(cmds) and session_notes.session(npz).get("hooks_swapped"):
+        print("Note: this puncher swapped the hooks; HOOK_L/HOOK_R prompts are swapped back (session_notes.json)")
     cmd_t = z["command_times"] if "command_times" in z.files else np.array([])
 
     sh_ok = (cf[:, L_SH] > KCONF) & (cf[:, R_SH] > KCONF)

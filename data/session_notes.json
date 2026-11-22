@@ -1,0 +1,18 @@
+{
+  "_about": "Notes on people and sessions that the .npz files don't hold. Read by session_notes.py. 'hooks_swapped': the puncher threw the opposite hook to the one prompted, so auto_label.py swaps HOOK_L/HOOK_R prompts for that session.",
+  "performers": {
+    "you": {"skill": "unknown", "stance": "southpaw (switch fighter)", "note": "the project owner"},
+    "volunteer1": {"skill": "beginner", "stance": "orthodox", "note": "never trained; punches are obviously untrained"},
+    "volunteer2": {"skill": "intermediate-advanced", "stance": "orthodox", "note": "semi-professional Muay Thai fighter; read 'left hook' as LEFT HAND and ignored the help line, so his prompted hooks are the opposite hand"}
+  },
+  "sessions": {
+    "session_20261121_192413_312171": {"exclude": true, "note": "36 s test run, 31% tracked: junk, kept only because sessions are never deleted"},
+    "session_20261121_192643_669947": {"performer": "you", "note": "10 s blocks; some hook prompts unclear to the puncher"},
+    "session_20261121_194856_263813": {"performer": "volunteer1", "note": "dim light, ~21 fps"},
+    "session_20261121_200608_314532": {"performer": "volunteer1", "wearer": "you"},
+    "session_20261121_210415_748239": {"performer": "volunteer2", "wearer": "you", "hooks_swapped": true,
+                                       "note": "only 61% tracked: stood off-center and leaned in; usable but many punch starts untracked"},
+    "session_20261121_213319_013537": {"performer": "volunteer2", "wearer": "you", "hooks_swapped": true,
+                                       "note": "re-recorded further back: 99% tracked, ~21-23 fps"}
+  }
+}
