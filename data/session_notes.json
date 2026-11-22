@@ -3,7 +3,8 @@
   "performers": {
     "you": {"skill": "unknown", "stance": "southpaw (switch fighter)", "note": "the project owner"},
     "volunteer1": {"skill": "beginner", "stance": "orthodox", "note": "never trained; punches are obviously untrained"},
-    "volunteer2": {"skill": "intermediate-advanced", "stance": "orthodox", "note": "semi-professional Muay Thai fighter; read 'left hook' as LEFT HAND and ignored the help line, so his prompted hooks are the opposite hand"}
+    "volunteer2": {"skill": "intermediate-advanced", "stance": "orthodox", "note": "semi-professional Muay Thai fighter; read 'left hook' as LEFT HAND and ignored the help line, so his prompted hooks are the opposite hand"},
+    "volunteer3": {"skill": "novice", "stance": "orthodox", "note": "first recorded with hooks named by hand on screen"}
   },
   "sessions": {
     "session_20261121_192413_312171": {"exclude": true, "note": "36 s test run, 31% tracked: junk, kept only because sessions are never deleted"},
@@ -13,6 +14,8 @@
     "session_20261121_210415_748239": {"performer": "volunteer2", "wearer": "you", "hooks_swapped": true,
                                        "note": "only 61% tracked: stood off-center and leaned in; usable but many punch starts untracked"},
     "session_20261121_213319_013537": {"performer": "volunteer2", "wearer": "you", "hooks_swapped": true,
-                                       "note": "re-recorded further back: 99% tracked, ~21-23 fps"}
+                                       "note": "re-recorded further back: 99% tracked, ~21-23 fps"},
+    "session_20261121_223419_058659": {"performer": "volunteer3", "wearer": "you",
+                                       "note": "98% tracked, ~29-31 fps"}
   }
 }
