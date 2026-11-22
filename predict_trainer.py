@@ -29,6 +29,8 @@ Reported for first punches and follow-ups (<= 1 s after another punch) separatel
   python predict_trainer.py                    # every test the data allows, budgets 1 2 4
   python predict_trainer.py --quick            # budget 2 only, no ablations
   python predict_trainer.py --save models/candidates/predictor.joblib
+  python predict_trainer.py --signed           # with vs without signed_motion.py's features
+  python predict_trainer.py --rule depth       # the hand-written pull-back rule alone (depth/dip/either)
 """
 import argparse
 import warnings
@@ -61,8 +63,11 @@ def wilson(k, n, z=1.96):
 
 
 # ----------------------------------------------------------------------------- data
-def build(paths, flow=True, train_prompted=False, horizon=pdx.H):
+def build(paths, flow=True, train_prompted=False, horizon=pdx.H, signed=False):
+    """signed=True appends signed_motion.py's per-fist features (group 'signed') and keeps
+    its pull-back rule scores in s['rule']."""
     import flow_features
+    import signed_motion as sm
     sessions, names, groups = [], None, None
     caches = {p: Path("features") / f"{Path(p).stem}.flow{flow_features.TAG}.npz" for p in paths}
     missing = [Path(p).stem for p, c in caches.items() if not c.exists()]
@@ -71,7 +76,16 @@ def build(paths, flow=True, train_prompted=False, horizon=pdx.H):
         flow = False
     for p in paths:
         s = pdx.load(p)
-        s["X"], names, groups = pdx.features(s, dict(np.load(caches[p])) if flow else None)
+        fl = dict(np.load(caches[p])) if flow else None
+        s["X"], names, groups = pdx.features(s, fl)
+        if signed:
+            F = sm.per_wrist(s["t"], s["kp"], s["cf"], None if fl is None else fl["div_rel"])
+            s["rule"] = {k: v.max(1) for k, v in sm.rule_scores(F).items()}
+            if s["stance"] == "southpaw":
+                F = F[:, ::-1]                               # lead hand first, as in predict_dataset
+            s["X"] = np.concatenate([s["X"], F.reshape(len(F), -1).astype(np.float32)], 1)
+            names = names + [f"signed_{n}{k}" for k in range(2) for n in sm.NAMES]
+            groups = groups + ["signed"] * (2 * len(sm.NAMES))
         s["y"] = pdx.targets(s, h=horizon, train_prompted=train_prompted)
         s["tracked"] = (s["cf"][:, 5] > pdx.KC) & (s["cf"][:, 6] > pdx.KC)
         s["dt"] = np.r_[np.median(np.diff(s["t"])), np.diff(s["t"])]
@@ -238,10 +252,18 @@ def tally(evals):
 
 
 # ----------------------------------------------------------------------------- one test
-def run_fold(sessions, train_parts, test_parts, cols, budgets, cooldown, credit, sims, rng):
-    model = fit(sessions, train_parts, cols)
-    oof, honest = inner_scores(sessions, train_parts, cols)
-    test = [predict(model, sessions[si], lo, hi) for si, lo, hi in test_parts]
+def run_fold(sessions, train_parts, test_parts, cols, budgets, cooldown, credit, sims, rng, rule=None):
+    """rule: score with signed_motion's hand-written rule (that variant) instead of a model;
+    its threshold is still chosen on the training parts only."""
+    if rule:
+        def score(si, lo, hi):
+            return sessions[si]["rule"][rule][lo:hi] * sessions[si]["tracked"][lo:hi]
+        oof, honest = [score(*p) for p in train_parts], True
+        test = [score(*p) for p in test_parts]
+    else:
+        model = fit(sessions, train_parts, cols)
+        oof, honest = inner_scores(sessions, train_parts, cols)
+        test = [predict(model, sessions[si], lo, hi) for si, lo, hi in test_parts]
     out = {}
     for b in budgets:
         thr = pick_threshold(sessions, train_parts, oof, b, cooldown, credit)
@@ -370,6 +392,11 @@ def main():
     ap.add_argument("--train-prompted", action="store_true", help="also learn from prompted punches (screen cue!)")
     ap.add_argument("--no-flow", action="store_true", help="leave out the optical-flow features")
     ap.add_argument("--quick", action="store_true", help="budget 2 only, 200 random runs, no ablations")
+    ap.add_argument("--signed", action="store_true",
+                    help="add signed_motion.py's per-fist features and compare with and without them "
+                         "(saves models/candidates/predictor_signed.joblib)")
+    ap.add_argument("--rule", choices=("depth", "dip", "either"),
+                    help="score signed_motion.py's hand-written pull-back rule instead of a model")
     ap.add_argument("--save", default="models/candidates/predictor.joblib")
     args = ap.parse_args()
     save = Path(args.save)
@@ -381,8 +408,11 @@ def main():
                    if p.with_suffix(".labels.json").exists() and p.with_suffix(".auto_candidates.json").exists())
     if not paths:
         raise SystemExit(f"no reviewed sessions in {args.data}/")
+    signed = args.signed or bool(args.rule)
+    if args.signed and args.save == ap.get_default("save"):
+        save = Path("models/candidates/predictor_signed.joblib")
     sessions, names, groups = build(paths, flow=not args.no_flow, train_prompted=args.train_prompted,
-                                    horizon=args.horizon)
+                                    horizon=args.horizon, signed=signed)
     print(f"{len(sessions)} sessions, {len(names)} features")
     for s in sessions:
         nat = [q for q in s["punches"] if q["kind"] == NATURAL]
@@ -395,18 +425,30 @@ def main():
         print("\n" + n)
     for name, why, folds in plan:
         print(f"\n=== {name} ===\n    {why}")
-        sets = FEATURE_SETS if not args.quick else {"all": FEATURE_SETS["all"]}
+        if args.rule:
+            sets, full = {f"rule '{args.rule}'": ()}, {f"rule '{args.rule}'"}
+        elif args.signed:
+            sets = {"all": FEATURE_SETS["all"], "all+signed": FEATURE_SETS["all"] + ("signed",),
+                    "signed only": ("signed",)}
+            full = {"all", "all+signed"}
+        else:
+            sets, full = FEATURE_SETS, {"all"}
+        if args.quick:
+            sets = {k: v for k, v in sets.items() if k in full}
         for set_name, use in sets.items():
             cols = [j for j, g in enumerate(groups) if g in use]
-            budgets = args.budgets if set_name == "all" else [2.]
+            budgets = args.budgets if set_name in full else [2.]
             try:
                 res = merge_folds([run_fold(sessions, tr, te, cols, budgets, args.cooldown, args.credit,
-                                            args.sims if set_name == "all" else min(args.sims, 200), rng)
+                                            args.sims if set_name in full else min(args.sims, 200), rng,
+                                            rule=args.rule)
                                    for tr, te in folds], budgets)
             except NotEnoughData as e:
                 print(f"  [{set_name}] not enough data: {e}")
                 continue
-            if set_name == "all":
+            if set_name in full:
+                if len(full) > 1:
+                    print(f"  [{set_name}]")
                 print_result(res, budgets)
             else:
                 tl = res[2.]["tally"]
@@ -414,6 +456,8 @@ def main():
                 print(f"  ablation [{set_name}] at budget 2: warned {', '.join(parts)}; "
                       f"false/min don't-punch {tl['fa_dont']:.2f}, natural {tl['fa_natural']:.2f}")
 
+    if args.rule:
+        return                      # a hand-written rule has nothing to save
     # final model on everything usable, threshold from out-of-fold scores
     cols = list(range(len(names)))
     parts = [(i, 0, len(s["t"])) for i, s in enumerate(sessions)]

@@ -234,6 +234,7 @@ Anyone can then retrain with `python early_detector.py`. Share the `.mp4` some o
 | `combo_candidates.py` | Adds combo follow-up punches in free-boxing blocks to the review |
 | `label_agreement.py` | How well two reviewers agree (decisions and start frames) |
 | `predict_dataset.py`, `predict_trainer.py` | Experimental punch **prediction** (warn before the fist moves), tested on unseen people; see [PREDICTION.md](PREDICTION.md) |
+| `signed_motion.py`, `early_detector_signed.py` | Signed (out vs back) fist motion, a pull-back rule, and a like-for-like reactive A/B test of them |
 | `early_dataset.py` | Features + labels from reviewed sessions |
 | `early_detector.py` | Cross-validated training and evaluation |
 | `flow_features.py` | Optical-flow features (cached in `features/`) |

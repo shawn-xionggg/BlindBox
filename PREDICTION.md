@@ -13,6 +13,8 @@ The earlier attempt found no signal (REPORT.md). Every punch then was a reaction
 | `predict_dataset.py` | Per-frame targets and features |
 | `predict_trainer.py` | Trains, tests (a), (b), (c), saves to `models/candidates/` |
 | `test_predict.py` | Includes the positive and negative controls below |
+| `signed_motion.py` | Signed motion of each fist (Kalman-smoothed) and a hand-written pull-back rule (section 7) |
+| `early_detector_signed.py` | Runs the unchanged `early_detector.py` with the signed features added, for a like-for-like reactive comparison |
 
 ## 1. Run it
 
@@ -76,7 +78,27 @@ The pipeline finds a real telegraph on a person it never saw, and doesn't invent
 - Only the body and rhythm features carried it; context alone warned 0/52.
 - Caveats: the same person, session and camera on both sides; a fixed desk camera; labels from before the start rule. **This is a hint at best. The real answer needs free-boxing sessions from at least 2–3 new people.**
 
-## 6. Known limits
+## 6. Signed motion and the pull-back rule
+
+The original speed feature can't tell a fist going out from one coming back. `signed_motion.py` adds, per fist and per frame (causal):
+- signed speed and acceleration **away from (+) / back toward (−) its guard spot**
+- how far it is **below** its guard spot, with vertical speed and acceleration (a dip before an uppercut)
+- **looming**: how far it is in front of (+) or behind (−) where it was at guard, from the optical-flow divergence around it, with speed and acceleration
+- **time to turnaround** (−speed ÷ acceleration while moving back and slowing down) and **where** it will turn around
+
+All are smoothed with a constant-acceleration Kalman filter, which estimates position, speed and acceleration together and copes with dropped frames.
+
+**The rule:** warn when a fist is already behind (or below) its guard spot, still moving back but slowing down, and will turn around within 0.15 s further behind. A retraction that stops at the guard spot doesn't fire (tested).
+
+```powershell
+python predict_trainer.py --signed          # predictor with vs without the signed features
+python predict_trainer.py --rule either     # the rule alone (depth / dip / either)
+python early_detector_signed.py --budgets 2              # reactive baseline
+python early_detector_signed.py --signed --budgets 2     # reactive + signed features
+python early_detector_signed.py --rule either --budgets 2   # rule as the reactive "hand-made" row
+```
+
+## 7. Known limits
 
 - Older labels used "first frame the fist leaves guard" as the start, so some wind-ups are inside their punches. New decisions are tagged `"rule": "toward_target"`.
 - The cached flow divergence (`div_rel`) runs *negative* during punches. As measured around the wrist joint, it isn't a clean "fist grows" signal, which matters for the looming features of the next step.
