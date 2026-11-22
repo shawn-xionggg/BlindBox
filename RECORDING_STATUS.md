@@ -55,6 +55,7 @@ Every punch stops short of the wearer. Soft gloves.
 | session_20261121_233345_289835 | volunteer6 (orthodox) | beginner | 5.1 min | 3 min | 97% | 30 s prompt blocks; ~21 fps; **erratic** (e.g. 3 hooks in a row) |
 | session_20261121_235935_259319 | volunteer7 (orthodox) | beginner | 6.5 min | 4 min | 99% | 30 s prompt blocks |
 | session_20261122_001919_731330 | volunteer8 (orthodox) | beginner | 5.5 min | 3 min | 98% | 30 s prompt blocks |
+| session_20261122_004705_346471 | volunteer9 (orthodox) | beginner | 5.1 min | 3 min | 99% | 30 s prompt blocks; ~27-31 fps |
 
 A 36 s test run (`session_20261121_192413_312171`) is junk and isn't in git.
 
