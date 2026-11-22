@@ -1,0 +1,209 @@
+{
+ "about": "Frame of the EARLIEST visible tell (dip/tilt/guard drop) before each punch, marked by the labeler before the start rule was clarified. Not a punch start; never used for training. telegraph length = reviewed start - telegraph_frame.",
+ "marks": [
+  {
+   "candidate": 3,
+   "telegraph_frame": 1125,
+   "family": "HOOK_R",
+   "decision": "yes"
+  },
+  {
+   "candidate": 5,
+   "telegraph_frame": 1311,
+   "family": "HOOK_R",
+   "decision": "yes"
+  },
+  {
+   "candidate": 6,
+   "telegraph_frame": 1451,
+   "family": "JAB",
+   "decision": "yes"
+  },
+  {
+   "candidate": 7,
+   "telegraph_frame": 1605,
+   "family": "HOOK_L",
+   "decision": "yes"
+  },
+  {
+   "candidate": 9,
+   "telegraph_frame": 1828,
+   "family": "CROSS",
+   "decision": "yes"
+  },
+  {
+   "candidate": 10,
+   "telegraph_frame": 1871,
+   "family": "HOOK_R",
+   "decision": "yes"
+  },
+  {
+   "candidate": 11,
+   "telegraph_frame": 1936,
+   "family": "CROSS",
+   "decision": "yes"
+  },
+  {
+   "candidate": 12,
+   "telegraph_frame": 2352,
+   "family": "CROSS",
+   "decision": "yes"
+  },
+  {
+   "candidate": 13,
+   "telegraph_frame": 2455,
+   "family": "CROSS",
+   "decision": "yes"
+  },
+  {
+   "candidate": 14,
+   "telegraph_frame": 2491,
+   "family": "JAB",
+   "decision": "yes"
+  },
+  {
+   "candidate": 15,
+   "telegraph_frame": 2608,
+   "family": "JAB",
+   "decision": "yes"
+  },
+  {
+   "candidate": 16,
+   "telegraph_frame": 2786,
+   "family": "HOOK_R",
+   "decision": "yes"
+  },
+  {
+   "candidate": 17,
+   "telegraph_frame": 2852,
+   "family": "CROSS",
+   "decision": "yes"
+  },
+  {
+   "candidate": 18,
+   "telegraph_frame": 2894,
+   "family": "JAB",
+   "decision": "yes"
+  },
+  {
+   "candidate": 19,
+   "telegraph_frame": 2994,
+   "family": "JAB",
+   "decision": "yes"
+  },
+  {
+   "candidate": 20,
+   "telegraph_frame": 3047,
+   "family": "HOOK_R",
+   "decision": "yes"
+  },
+  {
+   "candidate": 22,
+   "telegraph_frame": 3143,
+   "family": "HOOK_R",
+   "decision": "yes"
+  },
+  {
+   "candidate": 23,
+   "telegraph_frame": 3155,
+   "family": "HOOK_R",
+   "decision": "yes"
+  },
+  {
+   "candidate": 24,
+   "telegraph_frame": 3232,
+   "family": "HOOK_R",
+   "decision": "yes"
+  },
+  {
+   "candidate": 25,
+   "telegraph_frame": 3238,
+   "family": "HOOK_R",
+   "decision": "yes"
+  },
+  {
+   "candidate": 27,
+   "telegraph_frame": 3767,
+   "family": "JAB",
+   "decision": "yes"
+  },
+  {
+   "candidate": 28,
+   "telegraph_frame": 3852,
+   "family": "UPPERCUT",
+   "decision": "yes"
+  },
+  {
+   "candidate": 30,
+   "telegraph_frame": 3954,
+   "family": "JAB",
+   "decision": "yes"
+  },
+  {
+   "candidate": 31,
+   "telegraph_frame": 4016,
+   "family": "JAB",
+   "decision": "yes"
+  },
+  {
+   "candidate": 32,
+   "telegraph_frame": 4061,
+   "family": "JAB",
+   "decision": "yes"
+  },
+  {
+   "candidate": 35,
+   "telegraph_frame": 4299,
+   "family": "JAB",
+   "decision": "yes"
+  },
+  {
+   "candidate": 36,
+   "telegraph_frame": 4322,
+   "family": "JAB",
+   "decision": "yes"
+  },
+  {
+   "candidate": 37,
+   "telegraph_frame": 4436,
+   "family": "CROSS",
+   "decision": "yes"
+  },
+  {
+   "candidate": 38,
+   "telegraph_frame": 4483,
+   "family": "JAB",
+   "decision": "yes"
+  },
+  {
+   "candidate": 39,
+   "telegraph_frame": 4494,
+   "family": "JAB",
+   "decision": "yes"
+  },
+  {
+   "candidate": 40,
+   "telegraph_frame": 4710,
+   "family": "CROSS",
+   "decision": "yes"
+  },
+  {
+   "candidate": 41,
+   "telegraph_frame": 4720,
+   "family": "CROSS",
+   "decision": "yes"
+  },
+  {
+   "candidate": 42,
+   "telegraph_frame": 4920,
+   "family": "HOOK_R",
+   "decision": "yes"
+  },
+  {
+   "candidate": 43,
+   "telegraph_frame": 4966,
+   "family": "CROSS",
+   "decision": "yes"
+  }
+ ]
+}
