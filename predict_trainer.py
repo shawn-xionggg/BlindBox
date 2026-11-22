@@ -494,6 +494,7 @@ def main():
     ap.add_argument("--self-calibrate", action="store_true",
                     help="add test (b-auto): personalization learned from label-free punches (the auto-labeler's "
                          "movements) instead of reviewed ones, as a live system could do in a warm-up minute")
+    ap.add_argument("--only-mount", choices=("head", "desk"), help="use only sessions recorded with this camera mount")
     ap.add_argument("--calm-threshold", action="store_true",
                     help="add test (a-calm): new person, threshold from their own don't-punch footage (label-free)")
     ap.add_argument("--auto-qualities", nargs="+", default=list(AUTO_QUALITIES),
@@ -508,6 +509,11 @@ def main():
         args.budgets, args.sims = [2.], min(args.sims, 200)
     paths = sorted(p for p in Path(args.data).glob("*.npz")
                    if p.with_suffix(".labels.json").exists() and p.with_suffix(".auto_candidates.json").exists())
+    if args.only_mount:
+        def mount_of(p):
+            with np.load(p, allow_pickle=False) as z:
+                return str(z["mount"]) if "mount" in z.files else "desk"
+        paths = [p for p in paths if mount_of(p) == args.only_mount]
     if not paths:
         raise SystemExit(f"no reviewed sessions in {args.data}/")
     signed = args.signed or bool(args.rule)
