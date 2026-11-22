@@ -562,6 +562,26 @@ static void usage() {
         "              [--ncnn DIR [--fp16] | --model yolo11n-pose.onnx] [--csv OUT] [--hat] [--threads N] [--prio P]\n");
 }
 
+// Saves the frame as a binary PPM with the keypoints drawn (green = confident, red = not), to see what the Pi sees.
+static void save_snapshot(const char *path, const cv::Mat &bgr, const V2 *kp, const double *conf) {
+    cv::Mat img = bgr.clone();
+    for (int i = 0; i < 17; i++) {
+        if (!fin(kp[i])) continue;
+        cv::Scalar col = conf[i] > KC ? cv::Scalar(0, 255, 0) : cv::Scalar(0, 0, 255);
+        int r = (i == 9 || i == 10) ? 9 : (i == 5 || i == 6) ? 7 : 4;   // wrists and shoulders bigger
+        cv::circle(img, cv::Point((int)kp[i].x, (int)kp[i].y), r, col, 2);
+    }
+    std::string tmp = std::string(path) + ".tmp";
+    FILE *f = std::fopen(tmp.c_str(), "wb");
+    if (!f) return;
+    std::fprintf(f, "P6\n%d %d\n255\n", img.cols, img.rows);
+    cv::Mat rgb;
+    cv::cvtColor(img, rgb, cv::COLOR_BGR2RGB);
+    for (int y = 0; y < rgb.rows; y++) std::fwrite(rgb.ptr(y), 1, (size_t)rgb.cols * 3, f);
+    std::fclose(f);
+    std::rename(tmp.c_str(), path);
+}
+
 static const char *cue_name(const char *side) {
     if (!std::strcmp(side, "LEFT")) return "DODGE RIGHT";
     if (!std::strcmp(side, "RIGHT")) return "DODGE LEFT";
@@ -571,6 +591,7 @@ static const char *cue_name(const char *side) {
 
 int main(int argc, char **argv) {
     const char *frames_path = nullptr, *csv_path = nullptr, *model_path = "yolo11n-pose.onnx", *ncnn_dir = nullptr;
+    const char *snap_path = nullptr;
     bool file_pose = false, use_hat = false, fp16 = false;
     int threads = 4, camera_unit = -1, prio = 0;
     double seconds = 0;
@@ -587,6 +608,7 @@ int main(int argc, char **argv) {
         else if (a == "--camera" && i + 1 < argc) camera_unit = std::atoi(argv[++i]);
         else if (a == "--seconds" && i + 1 < argc) seconds = std::atof(argv[++i]);
         else if (a == "--prio" && i + 1 < argc) prio = std::atoi(argv[++i]);
+        else if (a == "--snapshot" && i + 1 < argc) snap_path = argv[++i];
         else { usage(); return 2; }
     }
     if (!frames_path == (camera_unit < 0) || (file_pose && camera_unit >= 0)) { usage(); return 2; }
@@ -677,6 +699,8 @@ int main(int argc, char **argv) {
         double d = now_s();
         t_pose.push_back((b - a) * 1e3); t_feat.push_back((c - b) * 1e3); t_total.push_back((d - a) * 1e3);
         if (camera_unit >= 0) t_capture.push_back((d - t) * 1e3);   // camera callback -> cue sent to the hat
+        static double last_snap = 0;
+        if (snap_path && d - last_snap >= 2.0) { save_snapshot(snap_path, frame, kp, conf); last_snap = d; }
         found_n += found;
         if (side) {
             events++;

@@ -10,7 +10,7 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 cd "$HERE" || exit 1
 chmod +x ../build_aarch64/vision 2>/dev/null
 sudo slay -f vision 2>/dev/null
-ARGS="--camera 5 --hat --ncnn pose_ncnn --fp16 --threads 3 --csv /tmp/vision_live.csv"
+ARGS="--camera 5 --hat --ncnn pose_ncnn --fp16 --threads 3 --csv /tmp/vision_live.csv --snapshot /tmp/vision_snap.ppm"
 [ -n "$1" ] && ARGS="$ARGS --seconds $1"
 sudo sh -c "nohup ../build_aarch64/vision $ARGS > /tmp/vision.log 2>&1 < /dev/null &"
 sleep 2
