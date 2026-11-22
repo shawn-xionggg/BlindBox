@@ -232,6 +232,30 @@ def pick_threshold(sessions, parts, scores, budget, cooldown, credit):
     return float(cands[a]) if a < len(cands) else float(vals.max()) + 1e-9
 
 
+def pick_threshold_calm(sessions, parts, scores, budget, cooldown):
+    """Label-free threshold for a NEW person: the lowest one whose warnings during their own
+    don't-punch footage (guard up, moving, no punching) stay within budget per minute.
+    Uses no punch labels: only which footage was a don't-punch prompt."""
+    vals = np.concatenate([sc[(sessions[si]["kind"][lo:hi] == DONT) & sessions[si]["tracked"][lo:hi]]
+                           for (si, lo, hi), sc in zip(parts, scores)])
+    if not len(vals):
+        raise NotEnoughData("no don't-punch footage of this person to calibrate on")
+
+    def rate(thr):
+        n = minutes = 0.
+        for (si, lo, hi), sc in zip(parts, scores):
+            s = sessions[si]
+            w = warnings_from(s["t"][lo:hi], sc, thr, cooldown) + lo
+            n += np.sum(s["kind"][w] == DONT) if len(w) else 0
+            m = (s["kind"][lo:hi] == DONT) & s["tracked"][lo:hi]
+            minutes += s["dt"][lo:hi][m].sum() / 60
+        return n / minutes if minutes else np.inf
+
+    cands = np.unique(np.quantile(vals, np.linspace(0.5, 1.0, 300)))
+    ok = [c for c in cands if rate(c) <= budget]
+    return float(ok[0]) if ok else float(vals.max()) + 1e-9
+
+
 def tally(evals):
     """Pool evaluate() results: per group of punches and the false-warning rates."""
     rows = [r for e in evals for r in e["punches"]]
@@ -254,9 +278,12 @@ def tally(evals):
 
 
 # ----------------------------------------------------------------------------- one test
-def run_fold(sessions, train_parts, test_parts, cols, budgets, cooldown, credit, sims, rng, rule=None):
+def run_fold(sessions, train_parts, test_parts, cols, budgets, cooldown, credit, sims, rng, rule=None,
+             calm_threshold=False):
     """rule: score with signed_motion's hand-written rule (that variant) instead of a model;
-    its threshold is still chosen on the training parts only."""
+    its threshold is still chosen on the training parts only.
+    calm_threshold: the threshold comes from the TEST person's own don't-punch footage instead
+    (label-free calibration, like "stand in guard for a minute" before a demo)."""
     if rule:
         def score(si, lo, hi):
             return sessions[si]["rule"][rule][lo:hi] * sessions[si]["tracked"][lo:hi]
@@ -268,7 +295,8 @@ def run_fold(sessions, train_parts, test_parts, cols, budgets, cooldown, credit,
         test = [predict(model, sessions[si], lo, hi) for si, lo, hi in test_parts]
     out = {}
     for b in budgets:
-        thr = pick_threshold(sessions, train_parts, oof, b, cooldown, credit)
+        thr = (pick_threshold_calm(sessions, test_parts, test, b, cooldown) if calm_threshold
+               else pick_threshold(sessions, train_parts, oof, b, cooldown, credit))
         evals, kinds_w = [], np.zeros(5)
         for (si, lo, hi), sc in zip(test_parts, test):
             s = sessions[si]
@@ -466,6 +494,8 @@ def main():
     ap.add_argument("--self-calibrate", action="store_true",
                     help="add test (b-auto): personalization learned from label-free punches (the auto-labeler's "
                          "movements) instead of reviewed ones, as a live system could do in a warm-up minute")
+    ap.add_argument("--calm-threshold", action="store_true",
+                    help="add test (a-calm): new person, threshold from their own don't-punch footage (label-free)")
     ap.add_argument("--auto-qualities", nargs="+", default=list(AUTO_QUALITIES),
                     help="with --self-calibrate: which auto-labeler movements count as punches")
     ap.add_argument("--save", default="models/candidates/predictor.joblib")
@@ -494,6 +524,12 @@ def main():
     rng = np.random.default_rng(0)
     n_real = len(sessions)
     plan, notes = tests(sessions)
+    if args.calm_threshold:
+        a = [p for p in plan if p[0].startswith("(a)")]
+        if a:
+            plan.append(("(a-calm) new person, alarm level from their own calm footage",
+                         "like (a), but the threshold is set on the test person's don't-punch footage "
+                         "(no punch labels): the false-warning rate there is held to the budget", a[0][2], True))
     if args.self_calibrate:
         folds, offsets = self_calibration_folds(sessions, args.horizon)
         if folds:
@@ -504,7 +540,9 @@ def main():
                          + "); scored on the second half with reviewed labels", folds))
     for n in notes:
         print("\n" + n)
-    for name, why, folds in plan:
+    for entry in plan:
+        name, why, folds = entry[:3]
+        calm = len(entry) > 3 and entry[3]
         print(f"\n=== {name} ===\n    {why}")
         if args.rule:
             sets, full = {f"rule '{args.rule}'": ()}, {f"rule '{args.rule}'"}
@@ -522,7 +560,7 @@ def main():
             try:
                 res = merge_folds([run_fold(sessions, tr, te, cols, budgets, args.cooldown, args.credit,
                                             args.sims if set_name in full else min(args.sims, 200), rng,
-                                            rule=args.rule)
+                                            rule=args.rule, calm_threshold=calm)
                                    for tr, te in folds], budgets)
             except NotEnoughData as e:
                 print(f"  [{set_name}] not enough data: {e}")
