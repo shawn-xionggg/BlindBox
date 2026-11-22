@@ -317,8 +317,11 @@ def main():
             st["family"] = family
         st["decision"], st["rule"] = decision, RULE
         paused = True                          # the next candidate opens paused on its start
-        if pos + 1 < len(cands):
-            pos += 1
+        # next undecided candidate (after this one first, then from the top); decided ones are skipped
+        order = list(range(pos + 1, len(cands))) + list(range(0, pos))
+        nxt = next((i for i in order if not states.get(str(i), {}).get("decision")), None)
+        if nxt is not None:
+            pos = nxt
             return True
         save(progress_path, labels_path, args.labeler, cands, states)
         print("All candidates reviewed.")
