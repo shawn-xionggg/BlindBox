@@ -48,6 +48,7 @@ Every punch stops short of the wearer. Soft gloves.
 | session_20261121_210415_748239 | volunteer2 | intermediate–advanced (semi-pro Muay Thai) | 7.4 min | 3 min | 61% | off-center, leaned in; **hooks swapped** |
 | session_20261121_213319_013537 | volunteer2 | intermediate–advanced | 8.4 min | 4 min | 99% | **hooks swapped**; ~21–23 fps |
 | session_20261121_223419_058659 | volunteer3 (orthodox) | novice | 9.5 min | 4 min | 98% | ~29–31 fps |
+| session_20261121_230741_390620 | volunteer4 (orthodox) | beginner | 3.1 min | 1 min | 99% | short session |
 
 A 36 s test run (`session_20261121_192413_312171`) is junk and isn't in git.
 
